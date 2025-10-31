@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Редактирование роли</title>
+  <style>
+    :root{ --bg:#f4f7fb; --card:#fff; --text:#1f2937; --muted:#6b7280;
+           --primary:#0d6efd; --primary-600:#0b5ed7; --gray:#6c757d;
+           --border:#e5e7eb; --danger:#dc3545; --soft-blue:#e9f2ff;
+           --shadow:0 10px 30px rgba(13,110,253,.08), 0 6px 12px rgba(0,0,0,.06); }
+    *{box-sizing:border-box}
+    body{ margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans","Helvetica Neue",sans-serif;color:var(--text);
+          background: radial-gradient(1200px 600px at -10% -10%, #eaf1ff 0%, transparent 60%),
+                      radial-gradient(900px 500px at 110% -20%, #eaf1ff 0%, transparent 60%), var(--bg); }
+    .container{max-width:880px;margin:48px auto;padding:0 20px;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
+    .card__header{padding:28px 28px 12px;background:linear-gradient(180deg,var(--soft-blue),#ffffff00 80%);}
+    .title{margin:0 0 6px;font-size:clamp(24px,2.8vw,32px);line-height:1.2;}
+    .subtitle{margin:0;color:var(--muted);font-size:14px;}
+    .card__body{padding:24px 28px 28px;}
+    .grid{display:grid;gap:16px}
+    @media (min-width:720px){
+      .grid--three{grid-template-columns: 1fr auto auto; gap:12px;}
+      .grid--two{grid-template-columns: 1fr 1fr; gap:18px 20px;}
+    }
+    label{display:block;margin:0 0 8px;font-weight:600;}
+    input, select{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#fff;outline:none;transition:border-color .2s, box-shadow .2s;}
+    input:focus, select:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(13,110,253,.12);}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
+    .btn{appearance:none;border:0;cursor:pointer;user-select:none;padding:11px 18px;border-radius:10px;font-weight:600;transition:transform .05s, background-color .2s;}
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{background:var(--primary);color:#fff;}
+    .btn-primary:hover{background:var(--primary-600)}
+    .btn-secondary{background:var(--gray);color:#fff;}
+    .btn-danger{background:var(--danger);color:#fff;}
+    .result{margin-top:20px;display:none;padding:16px 18px;border-radius:12px;border:1px dashed #cfe1ff;background:#fbfdff;}
+    .ok{background:#e7f7ee;border-color:#bee6cd}
+    .err{background:#fdeaea;border-color:#f3c2c2}
+    .note{color:var(--muted);font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="card__header">
+        <h1 class="title">Редактирование роли</h1>
+        <p class="subtitle">Введи <b>ID роли</b> для загрузки или перейди из меню ролей</p>
+      </div>
+
+      <div class="card__body">
+        <div class="grid grid--three" style="margin-bottom:8px;">
+          <div>
+            <label for="rid">ID роли</label>
+            <input id="rid" type="number" min="1" placeholder="например, 1"/>
+          </div>
+          <div style="align-self:end;">
+            <button id="loadBtn" class="btn btn-secondary">Загрузить</button>
+          </div>
+          <div style="align-self:end; display:flex; gap:8px; flex-wrap:wrap;">
+            <a href="/roles" class="btn btn-primary">← К списку ролей</a>
+            <!-- КНОПКА СОЗДАНИЯ УДАЛЕНА -->
+          </div>
+        </div>
+
+        <form id="editForm" style="display:none">
+          <div class="grid grid--two">
+            <div>
+              <label for="name">Название роли</label>
+              <input id="name" type="text" required>
+            </div>
+            <div>
+              <label for="status">Статус</label>
+              <select id="status" required>
+                <option value="true">Включено</option>
+                <option value="false">Выключено</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn btn-primary" id="saveBtn">Сохранить изменения</button>
+            <button type="button" id="deleteBtn" class="btn btn-danger">Удалить роль</button>
+            <span class="note">При создании выполняется POST; при редактировании — PUT/DELETE</span>
+          </div>
+        </form>
+
+        <div id="msg" class="result"></div>
+        <p class="note" style="margin-top:10px">API: <code>POST /api/roles</code>, <code>GET /api/roles/{id}</code>, <code>PUT /api/roles/{id}</code>, <code>DELETE /api/roles/{id}</code></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ridInput = document.getElementById('rid');
+    const loadBtn  = document.getElementById('loadBtn');
+    const form     = document.getElementById('editForm');
+    const msg      = document.getElementById('msg');
+    const saveBtn  = document.getElementById('saveBtn');
+    const deleteBtn= document.getElementById('deleteBtn');
+
+    let isCreate = false;
+
+    function showMsg(text, ok=true){
+      msg.style.display = 'block';
+      msg.textContent = text;
+      msg.className = 'result ' + (ok ? 'ok' : 'err');
+    }
+    function clearMsg(){ msg.style.display='none'; msg.textContent=''; msg.className='result'; }
+
+    async function loadRole(){
+      clearMsg();
+      const id = parseInt(ridInput.value, 10);
+      if (!id || id < 1) return showMsg('Укажи корректный ID роли', false);
+      try{
+        const r = await fetch(`/api/roles/${id}`);
+        const role = await r.json().catch(()=> ({}));
+        if (!r.ok) return showMsg(role.detail || 'Ошибка загрузки', false);
+
+        isCreate = false;
+        form.style.display = 'block';
+        document.querySelector('.title').textContent = 'Редактирование роли';
+        document.getElementById('name').value  = role.name;
+        document.getElementById('status').value = role.is_enabled ? 'true' : 'false';
+        deleteBtn.style.display = '';
+        saveBtn.textContent = 'Сохранить изменения';
+        showMsg(`Роль #${role.role_id} загружена`, true);
+      }catch{ showMsg('Сетевая ошибка при загрузке', false); }
+    }
+
+    loadBtn.addEventListener('click', loadRole);
+
+    async function createRole(){
+      const payload = {
+        name:  document.getElementById('name').value.trim(),
+        is_enabled: document.getElementById('status').value === 'true',
+      };
+      if (!payload.name){
+        return showMsg('Укажи название роли', false);
+      }
+      try{
+        const r = await fetch('/api/roles', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const body = await r.json().catch(()=> ({}));
+        if (!r.ok) return showMsg(body.detail || 'Ошибка создания', false);
+
+        isCreate = false;
+        ridInput.value = body.role_id;
+        deleteBtn.style.display = '';
+        saveBtn.textContent = 'Сохранить изменения';
+        showMsg(`Роль #${body.role_id} создана`, true);
+      }catch{ showMsg('Сетевая ошибка при создании', false); }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); clearMsg();
+
+      if (isCreate) {
+        return createRole();
+      }
+
+      const id = parseInt(ridInput.value, 10);
+      if (!id) return showMsg('Сначала загрузите роль', false);
+
+      const payload = {
+        name:  document.getElementById('name').value,
+        is_enabled: document.getElementById('status').value === 'true',
+      };
+
+      try{
+        const r = await fetch(`/api/roles/${id}`, {
+          method:'PUT', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const body = await r.json().catch(()=> ({}));
+        if (!r.ok) return showMsg(body.detail || 'Ошибка обновления', false);
+        showMsg(`Изменения сохранены для роли #${body.role_id}`, true);
+      }catch{ showMsg('Сетевая ошибка при сохранении', false); }
+    });
+
+    deleteBtn.addEventListener('click', async () => {
+      clearMsg();
+      const id = parseInt(ridInput.value, 10);
+      if (!id) return showMsg('Сначала загрузите роль', false);
+      if (!confirm(`Удалить роль #${id}? Это действие необратимо.`)) return;
+
+      try{
+        const r = await fetch(`/api/roles/${id}`, { method:'DELETE' });
+        const body = await r.json().catch(()=> ({}));
+        if (!r.ok) return showMsg(body.detail || 'Ошибка удаления', false);
+        form.style.display = 'none';
+        showMsg(`Роль #${id} удалена`, true);
+        ridInput.value = '';
+      }catch{ showMsg('Сетевая ошибка при удалении', false); }
+    });
+
+    ridInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); loadRole(); } });
+
+    // автозагрузка: ?id=... или ?create=1 (поддержка осталась, но кнопки нет)
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      const createFlag = params.get('create');
+
+      form.style.display = 'block';
+
+      if (createFlag === '1') {
+        isCreate = true;
+        document.querySelector('.title').textContent = 'Создание новой роли';
+        document.querySelector('.subtitle').textContent = 'Заполни форму и нажми «Сохранить изменения», чтобы создать запись';
+        document.getElementById('name').value  = '';
+        document.getElementById('status').value = 'true';
+        deleteBtn.style.display = 'none';
+        saveBtn.textContent = 'Создать роль';
+        return;
+      }
+
+      if (id) {
+        ridInput.value = id;
+        loadRole();
+      } else {
+        form.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

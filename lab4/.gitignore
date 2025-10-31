@@ -1,0 +1,41 @@
+# --- Python / виртуальные окружения ---
+venv/
+.venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# --- IDE / редакторы ---
+.idea/
+.vscode/
+
+# --- Секреты и переменные окружения ---
+.env
+*.env
+.env.*
+
+# --- Сборки и артефакты ---
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --- Кэши и тестовые артефакты ---
+.pytest_cache/
+.mypy_cache/
+.pyre/
+ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# --- Логи ---
+*.log
+
+# --- Файлы ОС ---
+.DS_Store
+Thumbs.db

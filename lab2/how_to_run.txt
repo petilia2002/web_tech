@@ -1,0 +1,5 @@
+Сделай ./venv/Scripts/activate
+
+Выполни pip install -r requirements.txt
+
+Запусти server.py через свою IDE
