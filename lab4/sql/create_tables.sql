@@ -26,3 +26,10 @@ CREATE TABLE auth.user_roles (
     granted_by BIGINT NULL REFERENCES auth.users(user_id),
     PRIMARY KEY (user_id, role_id)
 );
+
+CREATE TABLE auth.user_visits(
+    visit_id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES auth.users(user_id) ON DELETE CASCADE,
+    page_name VARCHAR(100) NOT NULL,
+    visited_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

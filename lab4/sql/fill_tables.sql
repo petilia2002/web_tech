@@ -60,3 +60,20 @@ FROM auth.user_roles ur
 JOIN auth.users u ON u.user_id=ur.user_id
 JOIN auth.roles r ON r.role_id=ur.role_id
 ORDER BY u.login, r.role_name;
+
+-- 4) Посещения пользователя
+INSERT INTO auth.user_visits (user_id, page_name)
+SELECT user_id, 'Главная страница' FROM auth.users
+WHERE last_name = 'Петренков';
+
+INSERT INTO auth.user_visits (user_id, page_name)
+SELECT user_id, 'Страница 2' FROM auth.users
+WHERE last_name = 'Петренков';
+
+INSERT INTO auth.user_visits (user_id, page_name)
+SELECT user_id, 'Страница 3' FROM auth.users
+WHERE last_name = 'Петренков';
+
+INSERT INTO auth.user_visits (user_id, page_name)
+SELECT user_id, 'Главная страница' FROM auth.users
+WHERE last_name = 'Сидорова';
