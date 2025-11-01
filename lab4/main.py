@@ -25,7 +25,13 @@ app.include_router(visitsRouter.router, prefix="/api")
 app.include_router(cartRouter.router, prefix="/api")
 
 
-# ----------------- Страницы -----------------
+# ----------------- Главная -----------------
+@app.get("/")
+def users_menu_page():
+    return FileResponse("static/index.html")
+
+
+# ----------------- Пользователи -----------------
 @app.get("/users")
 def users_menu_page():
     return FileResponse("static/users_menu.html")
@@ -42,6 +48,7 @@ def create_user_page():
     return FileResponse("static/edit_user.html")
 
 
+# ----------------- Роли -----------------
 @app.get("/roles")
 def roles_menu_page():
     return FileResponse("static/roles_menu.html")
@@ -52,7 +59,7 @@ def role_edit_page():
     return FileResponse("static/edit_role.html")
 
 
-# ----------------- Лабораторная работа №4 -----------------
+# ----------------- Авторизация -----------------
 @app.get("/login")
 def users_menu_page():
     return FileResponse("static/login.html")
@@ -66,3 +73,19 @@ def users_menu_page():
 @app.get("/stats")
 def users_menu_page():
     return FileResponse("static/stats.html")
+
+
+# ----------------- Корзина -----------------
+@app.get("/companies")
+def users_menu_page():
+    return FileResponse("static/companies.html")
+
+
+@app.get("/company")
+def users_menu_page():
+    return FileResponse("static/company.html")
+
+
+@app.get("/cart")
+def users_menu_page():
+    return FileResponse("static/cart.html")

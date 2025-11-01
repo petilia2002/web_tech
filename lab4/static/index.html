@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Главное меню</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .header {
+        color: white;
+        margin-bottom: 3rem;
+      }
+
+      .header h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      .nav-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .nav-card {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: #333;
+      }
+
+      .nav-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .nav-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #4a5568;
+      }
+
+      .nav-card p {
+        color: #718096;
+        line-height: 1.6;
+      }
+
+      .category {
+        color: white;
+        font-size: 1.5rem;
+        margin: 2rem 0 1rem 0;
+        text-align: left;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        padding-bottom: 0.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2.5rem;
+        }
+
+        .nav-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Добро пожаловать!</h1>
+        <p>Выберите раздел для перехода в нужный модуль приложения</p>
+      </div>
+
+      <div class="category">Управление пользователями</div>
+      <div class="nav-grid">
+        <a href="/users" class="nav-card">
+          <h3>👥 Пользователи</h3>
+          <p>Просмотр и управление списком пользователей системы</p>
+        </a>
+
+        <a href="/user-create" class="nav-card">
+          <h3>➕ Создать пользователя</h3>
+          <p>Добавление нового пользователя в систему</p>
+        </a>
+
+        <a href="/user-edit" class="nav-card">
+          <h3>✏️ Редактировать пользователя</h3>
+          <p>Изменение данных существующего пользователя</p>
+        </a>
+      </div>
+
+      <div class="category">Управление ролями</div>
+      <div class="nav-grid">
+        <a href="/roles" class="nav-card">
+          <h3>🎭 Роли</h3>
+          <p>Просмотр и управление ролями пользователей</p>
+        </a>
+
+        <a href="/role-edit" class="nav-card">
+          <h3>✏️ Редактировать роль</h3>
+          <p>Изменение настроек и прав ролей</p>
+        </a>
+      </div>
+
+      <div class="category">Безопасность</div>
+      <div class="nav-grid">
+        <a href="/login" class="nav-card">
+          <h3>🔐 Вход в систему</h3>
+          <p>Страница аутентификации пользователей</p>
+        </a>
+
+        <a href="/protected" class="nav-card">
+          <h3>🛡️ Защищенная страница</h3>
+          <p>Доступ только для авторизованных пользователей</p>
+        </a>
+      </div>
+
+      <div class="category">Аналитика и данные</div>
+      <div class="nav-grid">
+        <a href="/stats" class="nav-card">
+          <h3>📊 Статистика</h3>
+          <p>Просмотр статистики и аналитических данных</p>
+        </a>
+
+        <a href="/visits" class="nav-card">
+          <h3>📈 Посещения</h3>
+          <p>Мониторинг и анализ посещений</p>
+        </a>
+      </div>
+
+      <div class="category">Компании и корзина</div>
+      <div class="nav-grid">
+        <a href="/companies" class="nav-card">
+          <h3>🏢 Компании</h3>
+          <p>Просмотр списка компаний</p>
+        </a>
+
+        <a href="/company" class="nav-card">
+          <h3>🏭 Детали компании</h3>
+          <p>Подробная информация о компании</p>
+        </a>
+
+        <a href="/cart" class="nav-card">
+          <h3>🛒 Корзина</h3>
+          <p>Управление элементами корзины</p>
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
