@@ -3,18 +3,92 @@
   <head>
     <meta charset="utf-8" />
     <title>Статистика</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      #topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 16px;
+        border-bottom: 1px solid #ddd;
+        background: #fafafa;
+      }
+      #user-area {
+        font-size: 0.95rem;
+      }
+      a {
+        color: #0066cc;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      main {
+        padding: 16px;
+      }
+    </style>
   </head>
   <body>
-    <h1>Статистика посещений (protected_page)</h1>
-    <ol id="list">
-      Загружаю...
-    </ol>
-    <p><a href="/protected">Назад на защищённую страницу</a></p>
+    <div id="topbar">
+      <div><strong>Статистика посещений (protected_page)</strong></div>
+      <div id="user-area">
+        <span id="who"></span>
+        <span id="sep" style="display: none"> | </span>
+        <a href="#" id="logout" style="display: none">Выйти</a>
+      </div>
+    </div>
+
+    <main>
+      <ol id="list">
+        Загружаю...
+      </ol>
+      <p>
+        <a id="back-link" href="/protected">Назад на защищённую страницу</a>
+      </p>
+    </main>
 
     <script>
+      async function fetchMe() {
+        try {
+          const res = await fetch("/auth/me", {
+            credentials: "same-origin",
+          });
+          if (res.status === 401) {
+            window.location.href = "/login";
+            return null;
+          }
+          if (!res.ok) throw new Error("Ошибка получения данных сессии");
+          return await res.json();
+        } catch (err) {
+          console.error("fetchMe error", err);
+          // Если ошибка — безопаснее уйти на страницу логина
+          window.location.href = "/login";
+          return null;
+        }
+      }
+
+      async function doLogout() {
+        try {
+          await fetch("/auth/logout", {
+            method: "POST",
+            credentials: "same-origin",
+          });
+        } catch (e) {
+          console.warn("Logout request failed", e);
+        } finally {
+          window.location.href = "/login?logged_out=1";
+        }
+      }
+
       async function loadStats() {
         try {
-          const res = await fetch("/api/stats?page=protected_page");
+          const res = await fetch("/api/stats?page=protected_page", {
+            credentials: "same-origin",
+          });
           if (res.status === 401) {
             window.location.href = "/login";
             return;
@@ -32,12 +106,32 @@
             list.appendChild(li);
           });
         } catch (e) {
+          console.error("loadStats error", e);
           document.getElementById("list").innerHTML =
             "<li>Ошибка связи с сервером</li>";
         }
       }
 
-      loadStats();
+      (async function init() {
+        const me = await fetchMe();
+        if (!me) return;
+
+        // Показываем верхнюю панель с именем и кнопкой выхода
+        const who = document.getElementById("who");
+        const logoutLink = document.getElementById("logout");
+        const sep = document.getElementById("sep");
+
+        who.textContent = `Вы вошли как ${me.full_name || me.login}`;
+        sep.style.display = "inline";
+        logoutLink.style.display = "inline";
+        logoutLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          doLogout();
+        });
+
+        // Загружаем статистику
+        await loadStats();
+      })();
     </script>
   </body>
 </html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Фирма — автомобили</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 16px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      th {
+        background: #f5f5f5;
+        text-align: left;
+      }
+      button[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      #topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="topbar">
+      <div><a href="/companies">← Фирмы</a> | <a href="/cart">Корзина</a></div>
+      <div id="user-area">
+        <span id="who"></span><span id="sep" style="display: none"> | </span
+        ><a id="logout" href="#" style="display: none">Выйти</a>
+      </div>
+    </div>
+
+    <h1 id="headline">Фирма</h1>
+    <table id="cars-table">
+      <thead>
+        <tr>
+          <th>Марка</th>
+          <th>Год</th>
+          <th>Цена</th>
+          <th>Действие</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="4">Загружаю...</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <script>
+      function getQueryParam(name) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+      }
+
+      async function fetchMe() {
+        try {
+          const res = await fetch("/auth/me", {
+            credentials: "same-origin",
+          });
+          if (res.status === 401) return null;
+          return await res.json();
+        } catch (e) {
+          return null;
+        }
+      }
+
+      async function doLogout() {
+        try {
+          await fetch("/auth/logout", {
+            method: "POST",
+            credentials: "same-origin",
+          });
+        } catch (e) {}
+        window.location.href = "/login?logged_out=1";
+      }
+
+      document.getElementById("logout").addEventListener("click", function (e) {
+        e.preventDefault();
+        doLogout();
+      });
+
+      (async function init() {
+        // показ имени пользователя если авторизован
+        const me = await fetchMe();
+        if (me) {
+          document.getElementById("who").textContent = `Вы вошли как ${
+            me.full_name || me.login
+          }`;
+          document.getElementById("sep").style.display = "inline";
+          const lnk = document.getElementById("logout");
+          lnk.style.display = "inline";
+        }
+
+        const company_id = getQueryParam("company_id");
+        if (!company_id) {
+          document.getElementById("headline").textContent = "Фирма: не указана";
+          document.querySelector("#cars-table tbody").innerHTML =
+            '<tr><td colspan="4">Нет компании</td></tr>';
+          return;
+        }
+
+        try {
+          const res = await fetch(`/api/companies/${company_id}/cars`, {
+            credentials: "same-origin",
+          });
+          if (res.status === 404) {
+            document.querySelector("#cars-table tbody").innerHTML =
+              '<tr><td colspan="4">Фирма не найдена</td></tr>';
+            return;
+          }
+          if (res.status === 401) {
+            window.location.href = "/login";
+            return;
+          }
+          const data = await res.json();
+          document.getElementById(
+            "headline"
+          ).textContent = `Фирма: ${data.company.name}`;
+
+          const tbody = document.querySelector("#cars-table tbody");
+          tbody.innerHTML = "";
+          if (!data.items || data.items.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4">Нет автомобилей</td></tr>';
+            return;
+          }
+          data.items.forEach((it) => {
+            const tr = document.createElement("tr");
+            const price =
+              it.price !== null ? it.price.toLocaleString("ru-RU") + " ₽" : "-";
+            tr.innerHTML = `<td>${it.model}</td><td>${
+              it.year || "-"
+            }</td><td>${price}</td><td></td>`;
+            const tdAction = tr.querySelector("td:last-child");
+            if (it.in_cart) {
+              tdAction.textContent = "Уже в заказе";
+            } else {
+              const btn = document.createElement("button");
+              btn.textContent = "Добавить в заказ";
+              btn.addEventListener("click", async () => {
+                btn.disabled = true;
+                try {
+                  const r = await fetch("/api/cart/add", {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ car_id: it.car_id }),
+                  });
+                  if (r.status === 401) {
+                    window.location.href = "/login";
+                    return;
+                  }
+                  const resj = await r.json();
+                  if (resj.status === "ok") {
+                    tdAction.textContent = "Добавлено";
+                  } else {
+                    tdAction.textContent = resj.message || "Ошибка";
+                  }
+                } catch (e) {
+                  tdAction.textContent = "Ошибка сети";
+                } finally {
+                  btn.disabled = true;
+                }
+              });
+              tdAction.appendChild(btn);
+            }
+            tbody.appendChild(tr);
+          });
+        } catch (e) {
+          document.querySelector("#cars-table tbody").innerHTML =
+            '<tr><td colspan="4">Ошибка загрузки</td></tr>';
+        }
+      })();
+    </script>
+  </body>
+</html>

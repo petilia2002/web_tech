@@ -44,3 +44,19 @@ def logout(request: Request):
     request.session.pop("login", None)
     request.session.pop("full_name", None)
     return {"status": "ok", "message": "Вы вышли"}
+
+
+@router.get("/me")
+def me(request: Request):
+    """
+    Возвращает данные текущей сессии: user_id, login, full_name.
+    Если пользователь не авторизован — 401.
+    """
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Не авторизован")
+    return {
+        "user_id": user_id,
+        "login": request.session.get("login"),
+        "full_name": request.session.get("full_name"),
+    }

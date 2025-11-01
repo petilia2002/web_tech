@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
 from core.config import SESSION_SECRET
-from routers import userRouter, roleRouter, authRouter, visitsRouter
+from routers import userRouter, roleRouter, authRouter, visitsRouter, cartRouter
 
 # ----------------- FastAPI + статика -----------------
 app = FastAPI(title="Пользователи и роли — меню и редактирование")
@@ -22,6 +22,7 @@ app.include_router(userRouter.router, prefix="/api")
 app.include_router(roleRouter.router, prefix="/api")
 app.include_router(authRouter.router, prefix="/auth")
 app.include_router(visitsRouter.router, prefix="/api")
+app.include_router(cartRouter.router, prefix="/api")
 
 
 # ----------------- Страницы -----------------

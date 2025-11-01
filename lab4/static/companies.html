@@ -2,21 +2,18 @@
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
-    <title>Защищённая страница</title>
+    <title>Фирмы — каталог</title>
     <style>
-      #topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
+      body {
+        font-family: Arial, sans-serif;
+        padding: 16px;
       }
-      #user-area {
-        font-size: 0.95rem;
+      ul {
+        list-style: none;
+        padding: 0;
       }
-      a {
-        color: #0066cc;
-        text-decoration: none;
+      li {
+        margin: 8px 0;
       }
     </style>
   </head>
@@ -30,12 +27,11 @@
         <a href="#" id="logout" style="display: none">Выйти</a>
       </div>
     </div>
-
-    <main style="padding: 16px">
-      <h2 id="headline">Привет!</h2>
-      <div id="message">Загружаю...</div>
-      <p><a href="/stats">Перейти к статистике посещений</a></p>
-    </main>
+    <h1>Фирмы — Каталог автомобилей</h1>
+    <div><a href="/cart">Перейти в заказ</a></div>
+    <ul id="companies">
+      Загружаю...
+    </ul>
 
     <script>
       async function fetchMe() {
@@ -74,21 +70,26 @@
         }
       }
 
-      async function recordVisitAndShow() {
+      async function loadCompanies() {
         try {
-          const res = await fetch("/api/visit?page=protected_page", {
+          const res = await fetch("/api/companies", {
             credentials: "same-origin",
           });
-          if (res.status === 401) {
-            window.location.href = "/login";
-            return;
-          }
+          if (!res.ok) throw new Error("Ошибка получения списка фирм");
           const data = await res.json();
-          document.getElementById("message").textContent =
-            data.message || `Вы посетили данную страницу ${data.count} раз`;
+          const ul = document.getElementById("companies");
+          ul.innerHTML = "";
+          data.forEach((c) => {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = `/company?company_id=${c.company_id}`;
+            a.textContent = c.name;
+            li.appendChild(a);
+            ul.appendChild(li);
+          });
         } catch (e) {
-          document.getElementById("message").textContent =
-            "Ошибка записи визита";
+          document.getElementById("companies").innerHTML =
+            "<li>Ошибка загрузки</li>";
         }
       }
 
@@ -109,8 +110,8 @@
           doLogout();
         };
 
-        // Записать визит и показать количество
-        await recordVisitAndShow();
+        // Запрашиваем список компаний
+        await loadCompanies();
       })();
     </script>
   </body>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Ваш заказ</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 16px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+      th {
+        background: #f5f5f5;
+        text-align: left;
+      }
+      #topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      button {
+        padding: 6px 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="topbar">
+      <div><a href="/companies">← На главную</a></div>
+      <div id="user-area">
+        <span id="who"></span><span id="sep" style="display: none"> | </span
+        ><a id="logout" href="#" style="display: none">Выйти</a>
+      </div>
+    </div>
+
+    <h1>Список выбранных автомобилей</h1>
+
+    <table id="cart-table">
+      <thead>
+        <tr>
+          <th>Фирма</th>
+          <th>Марка</th>
+          <th>Год</th>
+          <th>Цена</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="4">Загружаю...</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Итого: <strong id="total">0</strong> ₽</p>
+    <div>
+      <button id="clear">Очистить заказ</button>
+    </div>
+
+    <script>
+      async function fetchMe() {
+        try {
+          const res = await fetch("/auth/me", {
+            credentials: "same-origin",
+          });
+          if (res.status === 401) {
+            window.location.href = "/login";
+            return null;
+          }
+          return await res.json();
+        } catch (e) {
+          window.location.href = "/login";
+          return null;
+        }
+      }
+
+      async function doLogout() {
+        try {
+          await fetch("/auth/logout", {
+            method: "POST",
+            credentials: "same-origin",
+          });
+        } catch (e) {}
+        window.location.href = "/login?logged_out=1";
+      }
+
+      document.getElementById("logout").addEventListener("click", (e) => {
+        e.preventDefault();
+        doLogout();
+      });
+
+      async function loadCart() {
+        try {
+          const res = await fetch("/api/cart", { credentials: "same-origin" });
+          if (res.status === 401) {
+            window.location.href = "/login.html";
+            return;
+          }
+          const data = await res.json();
+          const tbody = document.querySelector("#cart-table tbody");
+          tbody.innerHTML = "";
+          if (!data.items || data.items.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4">Корзина пуста</td></tr>';
+            document.getElementById("total").textContent = "0";
+            return;
+          }
+          data.items.forEach((it) => {
+            const tr = document.createElement("tr");
+            const price =
+              it.price !== null ? it.price.toLocaleString("ru-RU") + " ₽" : "-";
+            tr.innerHTML = `<td>${it.company_name}</td><td>${
+              it.model
+            }</td><td>${it.year || "-"}</td><td>${price}</td>`;
+            tbody.appendChild(tr);
+          });
+          document.getElementById("total").textContent =
+            data.total.toLocaleString("ru-RU");
+        } catch (e) {
+          document.querySelector("#cart-table tbody").innerHTML =
+            '<tr><td colspan="4">Ошибка загрузки</td></tr>';
+        }
+      }
+
+      document.getElementById("clear").addEventListener("click", async () => {
+        if (!confirm("Очистить заказ?")) return;
+        try {
+          const res = await fetch("/api/cart/clear", {
+            method: "POST",
+            credentials: "same-origin",
+          });
+          if (res.status === 401) {
+            window.location.href = "/login";
+            return;
+          }
+          await res.json();
+          await loadCart();
+        } catch (e) {
+          alert("Ошибка при очистке");
+        }
+      });
+
+      (async function init() {
+        const me = await fetchMe();
+        if (!me) return;
+        document.getElementById("who").textContent = `Вы вошли как ${
+          me.full_name || me.login
+        }`;
+        document.getElementById("sep").style.display = "inline";
+        document.getElementById("logout").style.display = "inline";
+        await loadCart();
+      })();
+    </script>
+  </body>
+</html>
