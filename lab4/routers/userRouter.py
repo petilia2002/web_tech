@@ -6,6 +6,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from db.database import engine
+from utils.passwords import generate_salt, hash_md5_with_salt, verify_md5_with_salt
 
 router = APIRouter(tags=["users"], responses={404: {"description": "Not Found"}})
 
@@ -133,6 +134,9 @@ def users_list(request: Request):
 # ----------------- Создание пользователя (до /{user_id}) -----------------
 @router.post("/users", response_model=UserOut, status_code=201)
 def create_user(payload: UserCreate):
+    salt = generate_salt()  # 8 символов по умолчанию
+    password_hash = hash_md5_with_salt(payload.password, salt)  # хешируем пароль
+
     try:
         with engine.begin() as conn:
             conn.execute(text("SET search_path TO auth, public"))
@@ -141,9 +145,9 @@ def create_user(payload: UserCreate):
                     text(
                         """
                     INSERT INTO auth.users (
-                        last_name, first_name, email, login, password_hash, created_at, updated_at
+                        last_name, first_name, email, login, salt, password_hash, created_at, updated_at
                     )
-                    VALUES (:last_name, :first_name, :email, :login, :password_hash, NOW(), NOW())
+                    VALUES (:last_name, :first_name, :email, :login, :salt, :password_hash, NOW(), NOW())
                     RETURNING user_id, last_name, first_name, email, login, created_at, updated_at
                 """
                     ),
@@ -152,7 +156,8 @@ def create_user(payload: UserCreate):
                         "first_name": payload.first_name,
                         "email": str(payload.email),
                         "login": payload.login,
-                        "password_hash": payload.password,  # в проде обязательно хешировать
+                        "salt": salt,
+                        "password_hash": password_hash,
                     },
                 )
                 .mappings()

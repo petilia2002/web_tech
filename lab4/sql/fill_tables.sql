@@ -6,14 +6,56 @@ INSERT INTO auth.roles (role_name, is_enabled) VALUES
 
 -- 2) Тестовые пользователи (7 шт.)
 
-INSERT INTO auth.users (last_name, first_name, email, login, password_hash) VALUES
-  ('Иванов',   'Иван',    'ivanov@example.com',     'ivanov',     '$2b$12$demo_hash_ivanov_______________60chars'),
-  ('Петров',   'Пётр',    'petrov@example.com',     'petrov',     '$2b$12$demo_hash_petrov_______________60chars'),
-  ('Сидорова', 'Анна',    'sidorova@example.com',   'asidorova',  '$2b$12$demo_hash_asidorova____________60chars'),
-  ('Кузнецова','Мария',   'mkuznetsova@example.com','mkuznetsova','$2b$12$demo_hash_mkuznetsova__________60chars'),
-  ('Смирнов',  'Алексей', 'asmirnov@example.com',   'asmirnov',   '$2b$12$demo_hash_asmirnov_____________60chars'),
-  ('Васильев', 'Дмитрий', 'dvasiliev@example.com',  'dvasiliev',  '$2b$12$demo_hash_dvasiliev____________60chars'),
-  ('Орлова',   'Ирина',   'iorlova@example.com',    'iorlova',    '$2b$12$demo_hash_iorlova______________60chars');
+-- INSERT INTO auth.users (last_name, first_name, email, login, password_hash) VALUES
+--   ('Иванов',   'Иван',    'ivanov@example.com',     'ivanov',     '$2b$12$demo_hash_ivanov_______________60chars'),
+--   ('Петров',   'Пётр',    'petrov@example.com',     'petrov',     '$2b$12$demo_hash_petrov_______________60chars'),
+--   ('Сидорова', 'Анна',    'sidorova@example.com',   'asidorova',  '$2b$12$demo_hash_asidorova____________60chars'),
+--   ('Кузнецова','Мария',   'mkuznetsova@example.com','mkuznetsova','$2b$12$demo_hash_mkuznetsova__________60chars'),
+--   ('Смирнов',  'Алексей', 'asmirnov@example.com',   'asmirnov',   '$2b$12$demo_hash_asmirnov_____________60chars'),
+--   ('Васильев', 'Дмитрий', 'dvasiliev@example.com',  'dvasiliev',  '$2b$12$demo_hash_dvasiliev____________60chars'),
+--   ('Орлова',   'Ирина',   'iorlova@example.com',    'iorlova',    '$2b$12$demo_hash_iorlova______________60chars');
+
+-- Иванов
+WITH s AS (SELECT substring(md5(random()::text) FROM 1 FOR 8) AS salt)
+INSERT INTO auth.users (last_name, first_name, email, login, salt, password_hash, created_at, updated_at)
+SELECT 'Иванов','Иван','ivanov@example.com','ivanov', s.salt, md5(s.salt || 'ivanov123'), NOW(), NOW()
+FROM s;
+
+-- Петров
+WITH s AS (SELECT substring(md5(random()::text) FROM 1 FOR 8) AS salt)
+INSERT INTO auth.users (last_name, first_name, email, login, salt, password_hash, created_at, updated_at)
+SELECT 'Петров','Пётр','petrov@example.com','petrov', s.salt, md5(s.salt || 'petrov123'), NOW(), NOW()
+FROM s;
+
+-- Сидорова
+WITH s AS (SELECT substring(md5(random()::text) FROM 1 FOR 8) AS salt)
+INSERT INTO auth.users (last_name, first_name, email, login, salt, password_hash, created_at, updated_at)
+SELECT 'Сидорова','Анна','sidorova@example.com','asidorova', s.salt, md5(s.salt || 'asidorova123'), NOW(), NOW()
+FROM s;
+
+-- Кузнецова
+WITH s AS (SELECT substring(md5(random()::text) FROM 1 FOR 8) AS salt)
+INSERT INTO auth.users (last_name, first_name, email, login, salt, password_hash, created_at, updated_at)
+SELECT 'Кузнецова','Мария','mkuznetsova@example.com','mkuznetsova', s.salt, md5(s.salt || 'mkuznetsova123'), NOW(), NOW()
+FROM s;
+
+-- Смирнов
+WITH s AS (SELECT substring(md5(random()::text) FROM 1 FOR 8) AS salt)
+INSERT INTO auth.users (last_name, first_name, email, login, salt, password_hash, created_at, updated_at)
+SELECT 'Смирнов','Алексей','asmirnov@example.com','asmirnov', s.salt, md5(s.salt || 'asmirnov123'), NOW(), NOW()
+FROM s;
+
+-- Васильев
+WITH s AS (SELECT substring(md5(random()::text) FROM 1 FOR 8) AS salt)
+INSERT INTO auth.users (last_name, first_name, email, login, salt, password_hash, created_at, updated_at)
+SELECT 'Васильев','Дмитрий','dvasiliev@example.com','dvasiliev', s.salt, md5(s.salt || 'dvasiliev123'), NOW(), NOW()
+FROM s;
+
+-- Орлова
+WITH s AS (SELECT substring(md5(random()::text) FROM 1 FOR 8) AS salt)
+INSERT INTO auth.users (last_name, first_name, email, login, salt, password_hash, created_at, updated_at)
+SELECT 'Орлова','Ирина','iorlova@example.com','iorlova', s.salt, md5(s.salt || 'iorlova123'), NOW(), NOW()
+FROM s;
 
 -- 3) Назначения ролей (многие-ко-многим) через подзапросы
 
@@ -64,15 +106,15 @@ ORDER BY u.login, r.role_name;
 -- 4) Посещения пользователя
 INSERT INTO auth.user_visits (user_id, page_name)
 SELECT user_id, 'Главная страница' FROM auth.users
-WHERE last_name = 'Петренков';
+WHERE last_name = 'Иванов';
 
 INSERT INTO auth.user_visits (user_id, page_name)
 SELECT user_id, 'Страница 2' FROM auth.users
-WHERE last_name = 'Петренков';
+WHERE last_name = 'Иванов';
 
 INSERT INTO auth.user_visits (user_id, page_name)
 SELECT user_id, 'Страница 3' FROM auth.users
-WHERE last_name = 'Петренков';
+WHERE last_name = 'Иванов';
 
 INSERT INTO auth.user_visits (user_id, page_name)
 SELECT user_id, 'Главная страница' FROM auth.users

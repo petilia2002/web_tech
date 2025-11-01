@@ -1,12 +1,15 @@
 CREATE EXTENSION IF NOT EXISTS citext;
 
+CREATE SCHEMA IF NOT EXISTS auth;
+
 CREATE TABLE auth.users (
     user_id BIGSERIAL PRIMARY KEY,
     last_name VARCHAR(100) NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     email CITEXT NOT NULL UNIQUE,
     login CITEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
+    salt VARCHAR(8) NOT NULL, -- динамическая соль длиной 8
+    password_hash TEXT NOT NULL, -- md5(salt || password)
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     CONSTRAINT email_format_chk CHECK (email ~* '^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$')
@@ -33,3 +36,5 @@ CREATE TABLE auth.user_visits(
     page_name VARCHAR(100) NOT NULL,
     visited_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+ALTER TABLE auth.users ADD COLUMN IF NOT EXISTS salt VARCHAR(8);

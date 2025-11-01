@@ -1,389 +1,611 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Редактирование пользователя</title>
-  <style>
-    :root{ --bg:#f4f7fb; --card:#fff; --text:#1f2937; --muted:#6b7280;
-           --primary:#0d6efd; --primary-600:#0b5ed7; --gray:#6c757d;
-           --border:#e5e7eb; --danger:#dc3545; --soft-blue:#e9f2ff;
-           --shadow:0 10px 30px rgba(13,110,253,.08), 0 6px 12px rgba(0,0,0,.06); }
-    *{box-sizing:border-box}
-    body{ margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans","Helvetica Neue",sans-serif;color:var(--text);
-          background: radial-gradient(1200px 600px at -10% -10%, #eaf1ff 0%, transparent 60%),
-                      radial-gradient(900px 500px at 110% -20%, #eaf1ff 0%, transparent 60%), var(--bg); }
-    .container{max-width:920px;margin:48px auto;padding:0 20px;}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
-    .card__header{padding:28px 28px 12px;background:linear-gradient(180deg,var(--soft-blue),#ffffff00 80%);}
-    .title{margin:0 0 6px;font-size:clamp(24px,2.8vw,32px);line-height:1.2;}
-    .subtitle{margin:0;color:var(--muted);font-size:14px;}
-    .card__body{padding:24px 28px 28px;}
-    .grid{display:grid;gap:16px}
-    @media (min-width:720px){
-      .grid--three{grid-template-columns: 1fr auto auto; gap:12px;}
-      .grid--two{grid-template-columns: 1fr 1fr; gap:18px 20px;}
-    }
-    label{display:block;margin:0 0 8px;font-weight:600;}
-    input, select{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:#fff;outline:none;transition:border-color .2s, box-shadow .2s;}
-    input:focus, select:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(13,110,253,.12);}
-    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
-    .btn{appearance:none;border:0;cursor:pointer;user-select:none;padding:11px 18px;border-radius:10px;font-weight:600;transition:transform .05s, background-color .2s;}
-    .btn:active{transform:translateY(1px)}
-    .btn-primary{background:var(--primary);color:#fff;}
-    .btn-primary:hover{background:var(--primary-600)}
-    .btn-secondary{background:var(--gray);color:#fff;}
-    .btn-danger{background:var(--danger);color:#fff;}
-    .result{margin-top:20px;display:none;padding:16px 18px;border-radius:12px;border:1px dashed #cfe1ff;background:#fbfdff;}
-    .ok{background:#e7f7ee;border-color:#bee6cd}
-    .err{background:#fdeaea;border-color:#f3c2c2}
-    .note{color:var(--muted);font-size:12px}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Редактирование пользователя</title>
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --card: #fff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --primary: #0d6efd;
+        --primary-600: #0b5ed7;
+        --gray: #6c757d;
+        --border: #e5e7eb;
+        --danger: #dc3545;
+        --soft-blue: #e9f2ff;
+        --shadow: 0 10px 30px rgba(13, 110, 253, 0.08),
+          0 6px 12px rgba(0, 0, 0, 0.06);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial,
+          "Noto Sans", "Helvetica Neue", sans-serif;
+        color: var(--text);
+        background: radial-gradient(
+            1200px 600px at -10% -10%,
+            #eaf1ff 0%,
+            transparent 60%
+          ),
+          radial-gradient(900px 500px at 110% -20%, #eaf1ff 0%, transparent 60%),
+          var(--bg);
+      }
+      .container {
+        max-width: 920px;
+        margin: 48px auto;
+        padding: 0 20px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .card__header {
+        padding: 28px 28px 12px;
+        background: linear-gradient(180deg, var(--soft-blue), #ffffff00 80%);
+      }
+      .title {
+        margin: 0 0 6px;
+        font-size: clamp(24px, 2.8vw, 32px);
+        line-height: 1.2;
+      }
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .card__body {
+        padding: 24px 28px 28px;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+      @media (min-width: 720px) {
+        .grid--three {
+          grid-template-columns: 1fr auto auto;
+          gap: 12px;
+        }
+        .grid--two {
+          grid-template-columns: 1fr 1fr;
+          gap: 18px 20px;
+        }
+      }
+      label {
+        display: block;
+        margin: 0 0 8px;
+        font-weight: 600;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      input:focus,
+      select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.12);
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .btn {
+        appearance: none;
+        border: 0;
+        cursor: pointer;
+        user-select: none;
+        padding: 11px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: transform 0.05s, background-color 0.2s;
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--primary-600);
+      }
+      .btn-secondary {
+        background: var(--gray);
+        color: #fff;
+      }
+      .btn-danger {
+        background: var(--danger);
+        color: #fff;
+      }
+      .result {
+        margin-top: 20px;
+        display: none;
+        padding: 16px 18px;
+        border-radius: 12px;
+        border: 1px dashed #cfe1ff;
+        background: #fbfdff;
+      }
+      .ok {
+        background: #e7f7ee;
+        border-color: #bee6cd;
+      }
+      .err {
+        background: #fdeaea;
+        border-color: #f3c2c2;
+      }
+      .note {
+        color: var(--muted);
+        font-size: 12px;
+      }
 
-    /* роли */
-    .section{margin-top:26px;padding-top:18px;border-top:1px dashed var(--border)}
-    .section h2{margin:0 0 10px;font-size:18px}
-    .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
-    .chip{display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:#fff;box-shadow:var(--shadow)}
-    .chip .x{cursor:pointer;border:0;background:transparent;font-weight:900;line-height:1}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="card">
-      <div class="card__header">
-        <h1 class="title">Редактирование пользователя</h1>
-        <p class="subtitle">Введи <b>ID пользователя</b>, загрузи данные, затем обнови/удали запись. Блок ролей появится после загрузки пользователя.</p>
-      </div>
-
-      <div class="card__body">
-        <!-- Ввод ID + загрузка -->
-        <div id="lookupRow" class="grid grid--three" style="margin-bottom:8px;">
-          <div>
-            <label for="uid">ID пользователя</label>
-            <input id="uid" type="number" min="1" placeholder="например, 1"/>
-          </div>
-          <div style="align-self:end;">
-            <button id="loadBtn" class="btn btn-secondary">Загрузить</button>
-          </div>
-          <div style="align-self:end; display:flex; gap:8px; flex-wrap:wrap;">
-            <a href="/" class="btn btn-primary">← К списку</a>
-          </div>
+      /* роли */
+      .section {
+        margin-top: 26px;
+        padding-top: 18px;
+        border-top: 1px dashed var(--border);
+      }
+      .section h2 {
+        margin: 0 0 10px;
+        font-size: 18px;
+      }
+      .chips {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 8px 0 12px;
+      }
+      .chip {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 6px 10px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: #fff;
+        box-shadow: var(--shadow);
+      }
+      .chip .x {
+        cursor: pointer;
+        border: 0;
+        background: transparent;
+        font-weight: 900;
+        line-height: 1;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="card__header">
+          <h1 class="title">Редактирование пользователя</h1>
+          <p class="subtitle">
+            Введи <b>ID пользователя</b>, загрузи данные, затем обнови/удали
+            запись. Блок ролей появится после загрузки пользователя.
+          </p>
         </div>
 
-        <!-- Форма пользователя -->
-        <form id="editForm" style="display:none">
-          <div class="grid grid--two">
+        <div class="card__body">
+          <!-- Ввод ID + загрузка -->
+          <div
+            id="lookupRow"
+            class="grid grid--three"
+            style="margin-bottom: 8px"
+          >
             <div>
-              <label for="last_name">Фамилия</label>
-              <input id="last_name" type="text" required>
+              <label for="uid">ID пользователя</label>
+              <input id="uid" type="number" min="1" placeholder="например, 1" />
             </div>
-            <div>
-              <label for="first_name">Имя</label>
-              <input id="first_name" type="text" required>
+            <div style="align-self: end">
+              <button id="loadBtn" class="btn btn-secondary">Загрузить</button>
             </div>
-          </div>
-
-          <div class="grid grid--two" style="margin-top:10px;">
-            <div>
-              <label for="email">E-mail</label>
-              <input id="email" type="email" required>
-            </div>
-            <div>
-              <label for="login">Логин</label>
-              <input id="login" type="text" required>
+            <div
+              style="align-self: end; display: flex; gap: 8px; flex-wrap: wrap"
+            >
+              <a href="/users" class="btn btn-primary">← К списку</a>
             </div>
           </div>
 
-          <div class="grid" style="margin-top:10px;">
-            <div>
-              <label for="password">Новый пароль</label>
-              <input id="password" type="password" placeholder="оставь пустым, чтобы не менять">
+          <!-- Форма пользователя -->
+          <form id="editForm" style="display: none">
+            <div class="grid grid--two">
+              <div>
+                <label for="last_name">Фамилия</label>
+                <input id="last_name" type="text" required />
+              </div>
+              <div>
+                <label for="first_name">Имя</label>
+                <input id="first_name" type="text" required />
+              </div>
+            </div>
+
+            <div class="grid grid--two" style="margin-top: 10px">
+              <div>
+                <label for="email">E-mail</label>
+                <input id="email" type="email" required />
+              </div>
+              <div>
+                <label for="login">Логин</label>
+                <input id="login" type="text" required />
+              </div>
+            </div>
+
+            <div class="grid" style="margin-top: 10px">
+              <div>
+                <label for="password">Новый пароль</label>
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="оставь пустым, чтобы не менять"
+                />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button id="saveBtn" type="submit" class="btn btn-primary">
+                Сохранить изменения
+              </button>
+              <button type="button" id="deleteBtn" class="btn btn-danger">
+                Удалить пользователя
+              </button>
+              <span class="note"
+                >Меняются только отправленные поля; пустой пароль не обновляет
+                значение в БД</span
+              >
+            </div>
+          </form>
+
+          <!-- Блок ролей пользователя -->
+          <div id="rolesSection" class="section" style="display: none">
+            <h2>Роли пользователя</h2>
+            <div class="chips" id="assigned"></div>
+
+            <div class="row">
+              <select id="roleSelect" style="min-width: 260px">
+                <option value="">— выбрать роль —</option>
+              </select>
+              <button id="grantBtn" class="btn btn-primary">Выдать роль</button>
+              <span class="note">Чтобы снять роль, нажми ✖ на бейдже.</span>
             </div>
           </div>
 
-          <div class="actions">
-            <button id="saveBtn" type="submit" class="btn btn-primary">Сохранить изменения</button>
-            <button type="button" id="deleteBtn" class="btn btn-danger">Удалить пользователя</button>
-            <span class="note">Меняются только отправленные поля; пустой пароль не обновляет значение в БД</span>
-          </div>
-        </form>
-
-        <!-- Блок ролей пользователя -->
-        <div id="rolesSection" class="section" style="display:none">
-          <h2>Роли пользователя</h2>
-          <div class="chips" id="assigned"></div>
-
-          <div class="row">
-            <select id="roleSelect" style="min-width:260px">
-              <option value="">— выбрать роль —</option>
-            </select>
-            <button id="grantBtn" class="btn btn-primary">Выдать роль</button>
-            <span class="note">Чтобы снять роль, нажми ✖ на бейдже.</span>
-          </div>
+          <div id="msg" class="result"></div>
+          <p class="note" style="margin-top: 10px">
+            API: <code>GET /api/users/{id}</code>,
+            <code>PUT /api/users/{id}</code>,
+            <code>DELETE /api/users/{id}</code>,
+            <code>GET /api/users/{id}/roles</code>,
+            <code>POST /api/users/{id}/roles</code>,
+            <code>DELETE /api/users/{id}/roles/{role_id}</code>
+          </p>
         </div>
-
-        <div id="msg" class="result"></div>
-        <p class="note" style="margin-top:10px">
-          API: <code>GET /api/users/{id}</code>, <code>PUT /api/users/{id}</code>, <code>DELETE /api/users/{id}</code>,
-          <code>GET /api/users/{id}/roles</code>, <code>POST /api/users/{id}/roles</code>, <code>DELETE /api/users/{id}/roles/{role_id}</code>
-        </p>
       </div>
     </div>
-  </div>
 
-  <script>
-    const uidInput = document.getElementById('uid');
-    const loadBtn  = document.getElementById('loadBtn');
-    const form     = document.getElementById('editForm');
-    const msg      = document.getElementById('msg');
+    <script>
+      const uidInput = document.getElementById("uid");
+      const loadBtn = document.getElementById("loadBtn");
+      const form = document.getElementById("editForm");
+      const msg = document.getElementById("msg");
 
-    const rolesSection = document.getElementById('rolesSection');
-    const assignedBox  = document.getElementById('assigned');
-    const roleSelect   = document.getElementById('roleSelect');
-    const grantBtn     = document.getElementById('grantBtn');
-    const saveBtn      = document.getElementById('saveBtn');
-    const deleteBtn    = document.getElementById('deleteBtn');
+      const rolesSection = document.getElementById("rolesSection");
+      const assignedBox = document.getElementById("assigned");
+      const roleSelect = document.getElementById("roleSelect");
+      const grantBtn = document.getElementById("grantBtn");
+      const saveBtn = document.getElementById("saveBtn");
+      const deleteBtn = document.getElementById("deleteBtn");
 
-    let allRoles = [];       // все роли из /api/roles/all
-    let assigned = [];       // роли пользователя
-    let currentUserId = null;
-    let isCreate = false;    // режим создания
+      let allRoles = []; // все роли из /api/roles/all
+      let assigned = []; // роли пользователя
+      let currentUserId = null;
+      let isCreate = false; // режим создания
 
-    function showMsg(text, ok=true){
-      msg.style.display = 'block';
-      msg.textContent = text;
-      msg.className = 'result ' + (ok ? 'ok' : 'err');
-    }
-    function clearMsg(){ msg.style.display='none'; msg.textContent=''; msg.className='result'; }
-
-    // ---- Роли (UI) ----
-    function renderAssigned(){
-      assignedBox.innerHTML = '';
-      if (!assigned.length){
-        const span = document.createElement('span');
-        span.className = 'note';
-        span.textContent = 'Роли не назначены';
-        assignedBox.appendChild(span);
-        return;
+      function showMsg(text, ok = true) {
+        msg.style.display = "block";
+        msg.textContent = text;
+        msg.className = "result " + (ok ? "ok" : "err");
       }
-      for (const r of assigned){
-        const chip = document.createElement('span');
-        chip.className = 'chip';
-        chip.innerHTML = `<span>${r.name}</span><button class="x" title="Снять роль" data-id="${r.role_id}">✖</button>`;
-        assignedBox.appendChild(chip);
+      function clearMsg() {
+        msg.style.display = "none";
+        msg.textContent = "";
+        msg.className = "result";
       }
-      // обработчик «снять»
-      assignedBox.querySelectorAll('.x').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-          const rid = parseInt(e.currentTarget.dataset.id, 10);
-          try{
-            const resp = await fetch(`/api/users/${currentUserId}/roles/${rid}`, {method:'DELETE'});
-            const body = await resp.json().catch(()=> ({}));
-            if (!resp.ok) return showMsg(body.detail || 'Ошибка снятия роли', false);
-            assigned = assigned.filter(x => x.role_id !== rid);
-            renderAssigned();
-            fillSelect(); // обновить список доступных
-            showMsg('Роль снята', true);
-          }catch{ showMsg('Сетевая ошибка при снятии роли', false); }
+
+      // ---- Роли (UI) ----
+      function renderAssigned() {
+        assignedBox.innerHTML = "";
+        if (!assigned.length) {
+          const span = document.createElement("span");
+          span.className = "note";
+          span.textContent = "Роли не назначены";
+          assignedBox.appendChild(span);
+          return;
+        }
+        for (const r of assigned) {
+          const chip = document.createElement("span");
+          chip.className = "chip";
+          chip.innerHTML = `<span>${r.name}</span><button class="x" title="Снять роль" data-id="${r.role_id}">✖</button>`;
+          assignedBox.appendChild(chip);
+        }
+        // обработчик «снять»
+        assignedBox.querySelectorAll(".x").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            const rid = parseInt(e.currentTarget.dataset.id, 10);
+            try {
+              const resp = await fetch(
+                `/api/users/${currentUserId}/roles/${rid}`,
+                { method: "DELETE" }
+              );
+              const body = await resp.json().catch(() => ({}));
+              if (!resp.ok)
+                return showMsg(body.detail || "Ошибка снятия роли", false);
+              assigned = assigned.filter((x) => x.role_id !== rid);
+              renderAssigned();
+              fillSelect(); // обновить список доступных
+              showMsg("Роль снята", true);
+            } catch {
+              showMsg("Сетевая ошибка при снятии роли", false);
+            }
+          });
         });
-      });
-    }
+      }
 
-    function fillSelect(){
-      // роли, которых нет у пользователя
-      const assignedIds = new Set(assigned.map(r => r.role_id));
-      roleSelect.innerHTML = '<option value="">— выбрать роль —</option>';
-      for (const r of allRoles){
-        if (!assignedIds.has(r.role_id)){
-          const opt = document.createElement('option');
-          opt.value = r.role_id;
-          opt.textContent = r.name + (r.is_enabled ? '' : ' (выкл.)');
-          roleSelect.appendChild(opt);
+      function fillSelect() {
+        // роли, которых нет у пользователя
+        const assignedIds = new Set(assigned.map((r) => r.role_id));
+        roleSelect.innerHTML = '<option value="">— выбрать роль —</option>';
+        for (const r of allRoles) {
+          if (!assignedIds.has(r.role_id)) {
+            const opt = document.createElement("option");
+            opt.value = r.role_id;
+            opt.textContent = r.name + (r.is_enabled ? "" : " (выкл.)");
+            roleSelect.appendChild(opt);
+          }
         }
       }
-    }
 
-    async function loadAllRoles(){
-      const r = await fetch('/api/roles/all');
-      const data = await r.json();
-      allRoles = (data.items || []).map(x => ({
-        role_id: x.role_id, name: x.name, is_enabled: !!x.is_enabled
-      }));
-    }
+      async function loadAllRoles() {
+        const r = await fetch("/api/roles/all");
+        const data = await r.json();
+        allRoles = (data.items || []).map((x) => ({
+          role_id: x.role_id,
+          name: x.name,
+          is_enabled: !!x.is_enabled,
+        }));
+      }
 
-    async function loadUserRoles(uid){
-      const r = await fetch(`/api/users/${uid}/roles`);
-      const data = await r.json();
-      assigned = data.items || [];
-      renderAssigned();
-      fillSelect();
-      rolesSection.style.display = '';
-    }
-
-    grantBtn.addEventListener('click', async () => {
-      const rid = parseInt(roleSelect.value, 10);
-      if (!rid) return showMsg('Выберите роль для выдачи', false);
-      try{
-        const r = await fetch(`/api/users/${currentUserId}/roles`, {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ role_id: rid })
-        });
-        const body = await r.json().catch(()=> ({}));
-        if (!r.ok) return showMsg(body.detail || 'Ошибка назначения роли', false);
-        // найти полное имя роли
-        const role = allRoles.find(x => x.role_id === rid);
-        if (role){
-          assigned.push({ role_id: role.role_id, name: role.name, is_enabled: role.is_enabled });
-        }
+      async function loadUserRoles(uid) {
+        const r = await fetch(`/api/users/${uid}/roles`);
+        const data = await r.json();
+        assigned = data.items || [];
         renderAssigned();
         fillSelect();
-        showMsg('Роль назначена', true);
-      }catch{ showMsg('Сетевая ошибка при назначении роли', false); }
-    });
+        rolesSection.style.display = "";
+      }
 
-    // ---- Пользователь (CRUD) ----
-
-    async function loadUser(){
-      clearMsg();
-      const id = parseInt(uidInput.value, 10);
-      if (!id || id < 1) return showMsg('Укажи корректный ID пользователя', false);
-      try{
-        const r = await fetch(`/api/users/${id}`);
-        const u = await r.json().catch(()=> ({}));
-        if (!r.ok) return showMsg(u.detail || 'Ошибка загрузки', false);
-
-        currentUserId = u.user_id;
-        form.style.display = 'block';
-        document.getElementById('last_name').value  = u.last_name;
-        document.getElementById('first_name').value = u.first_name;
-        document.getElementById('email').value      = u.email;
-        document.getElementById('login').value      = u.login;
-        document.getElementById('password').value   = '';
-        showMsg(`Пользователь #${u.user_id} загружен`, true);
-
-        // роли
-        await loadAllRoles();
-        await loadUserRoles(u.user_id);
-      }catch{ showMsg('Сетевая ошибка при загрузке', false); }
-    }
-
-    loadBtn.addEventListener('click', loadUser);
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault(); clearMsg();
-      if (isCreate){
-        const payload = {
-          last_name:  document.getElementById('last_name').value.trim(),
-          first_name: document.getElementById('first_name').value.trim(),
-          email:      document.getElementById('email').value.trim(),
-          login:      document.getElementById('login').value.trim(),
-          password:   document.getElementById('password').value
-        };
-        if (!payload.last_name || !payload.first_name || !payload.email || !payload.login){
-          return showMsg('Заполни все обязательные поля', false);
-        }
-        if (!payload.password){
-          return showMsg('Укажи пароль для нового пользователя', false);
-        }
-        try{
-          const r = await fetch('/api/users', {
-            method:'POST', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify(payload)
+      grantBtn.addEventListener("click", async () => {
+        const rid = parseInt(roleSelect.value, 10);
+        if (!rid) return showMsg("Выберите роль для выдачи", false);
+        try {
+          const r = await fetch(`/api/users/${currentUserId}/roles`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ role_id: rid }),
           });
-          const body = await r.json().catch(()=> ({}));
-          if (!r.ok) return showMsg(body.detail || 'Ошибка создания', false);
-          // переключаемся в режим редактирования
-          isCreate = false;
-          currentUserId = body.user_id;
-          uidInput.value = String(body.user_id);
-          saveBtn.textContent = 'Сохранить изменения';
-          deleteBtn.style.display = '';
-          document.getElementById('lookupRow').style.display = '';
-          document.querySelector('.title').textContent = 'Редактирование пользователя';
-          document.querySelector('.subtitle').textContent = 'Введи ID пользователя, загрузи данные, затем обнови/удали запись. Блок ролей появится после загрузки пользователя.';
-          // заполняем поля тем, что вернулось
-          document.getElementById('password').value = '';
-          rolesSection.style.display = 'none';
-          showMsg(`Пользователь #${body.user_id} создан`, true);
-          // подгружаем роли и показываем блок ролей
-          await loadUserRoles(body.user_id);
-          return;
-        }catch{ return showMsg('Сетевая ошибка при создании', false); }
+          const body = await r.json().catch(() => ({}));
+          if (!r.ok)
+            return showMsg(body.detail || "Ошибка назначения роли", false);
+          // найти полное имя роли
+          const role = allRoles.find((x) => x.role_id === rid);
+          if (role) {
+            assigned.push({
+              role_id: role.role_id,
+              name: role.name,
+              is_enabled: role.is_enabled,
+            });
+          }
+          renderAssigned();
+          fillSelect();
+          showMsg("Роль назначена", true);
+        } catch {
+          showMsg("Сетевая ошибка при назначении роли", false);
+        }
+      });
+
+      // ---- Пользователь (CRUD) ----
+
+      async function loadUser() {
+        clearMsg();
+        const id = parseInt(uidInput.value, 10);
+        if (!id || id < 1)
+          return showMsg("Укажи корректный ID пользователя", false);
+        try {
+          const r = await fetch(`/api/users/${id}`);
+          const u = await r.json().catch(() => ({}));
+          if (!r.ok) return showMsg(u.detail || "Ошибка загрузки", false);
+
+          currentUserId = u.user_id;
+          form.style.display = "block";
+          document.getElementById("last_name").value = u.last_name;
+          document.getElementById("first_name").value = u.first_name;
+          document.getElementById("email").value = u.email;
+          document.getElementById("login").value = u.login;
+          document.getElementById("password").value = "";
+          showMsg(`Пользователь #${u.user_id} загружен`, true);
+
+          // роли
+          await loadAllRoles();
+          await loadUserRoles(u.user_id);
+        } catch {
+          showMsg("Сетевая ошибка при загрузке", false);
+        }
       }
 
-      const id = parseInt(uidInput.value, 10);
-      if (!id) return showMsg('Сначала загрузите пользователя', false);
+      loadBtn.addEventListener("click", loadUser);
 
-      const payload = {
-        last_name:  document.getElementById('last_name').value,
-        first_name: document.getElementById('first_name').value,
-        email:      document.getElementById('email').value,
-        login:      document.getElementById('login').value
-      };
-      const pwd = document.getElementById('password').value;
-      if (pwd !== '') payload.password = pwd;
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearMsg();
+        if (isCreate) {
+          const payload = {
+            last_name: document.getElementById("last_name").value.trim(),
+            first_name: document.getElementById("first_name").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            login: document.getElementById("login").value.trim(),
+            password: document.getElementById("password").value,
+          };
+          if (
+            !payload.last_name ||
+            !payload.first_name ||
+            !payload.email ||
+            !payload.login
+          ) {
+            return showMsg("Заполни все обязательные поля", false);
+          }
+          if (!payload.password) {
+            return showMsg("Укажи пароль для нового пользователя", false);
+          }
+          try {
+            const r = await fetch("/api/users", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const body = await r.json().catch(() => ({}));
+            if (!r.ok) return showMsg(body.detail || "Ошибка создания", false);
+            // переключаемся в режим редактирования
+            isCreate = false;
+            currentUserId = body.user_id;
+            uidInput.value = String(body.user_id);
+            saveBtn.textContent = "Сохранить изменения";
+            deleteBtn.style.display = "";
+            document.getElementById("lookupRow").style.display = "";
+            document.querySelector(".title").textContent =
+              "Редактирование пользователя";
+            document.querySelector(".subtitle").textContent =
+              "Введи ID пользователя, загрузи данные, затем обнови/удали запись. Блок ролей появится после загрузки пользователя.";
+            // заполняем поля тем, что вернулось
+            document.getElementById("password").value = "";
+            rolesSection.style.display = "none";
+            showMsg(`Пользователь #${body.user_id} создан`, true);
+            // подгружаем роли и показываем блок ролей
+            await loadUserRoles(body.user_id);
+            return;
+          } catch {
+            return showMsg("Сетевая ошибка при создании", false);
+          }
+        }
 
-      try{
-        const r = await fetch(`/api/users/${id}`, {
-          method:'PUT', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify(payload)
+        const id = parseInt(uidInput.value, 10);
+        if (!id) return showMsg("Сначала загрузите пользователя", false);
+
+        const payload = {
+          last_name: document.getElementById("last_name").value,
+          first_name: document.getElementById("first_name").value,
+          email: document.getElementById("email").value,
+          login: document.getElementById("login").value,
+        };
+        const pwd = document.getElementById("password").value;
+        if (pwd !== "") payload.password = pwd;
+
+        try {
+          const r = await fetch(`/api/users/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const body = await r.json().catch(() => ({}));
+          if (!r.ok) return showMsg(body.detail || "Ошибка обновления", false);
+          showMsg(
+            `Изменения сохранены для пользователя #${body.user_id}`,
+            true
+          );
+        } catch {
+          showMsg("Сетевая ошибка при сохранении", false);
+        }
+      });
+
+      document
+        .getElementById("deleteBtn")
+        .addEventListener("click", async () => {
+          clearMsg();
+          const id = parseInt(uidInput.value, 10);
+          if (!id) return showMsg("Сначала загрузите пользователя", false);
+          if (!confirm(`Удалить пользователя #${id}? Это действие необратимо.`))
+            return;
+
+          try {
+            const r = await fetch(`/api/users/${id}`, { method: "DELETE" });
+            const body = await r.json().catch(() => ({}));
+            if (!r.ok) return showMsg(body.detail || "Ошибка удаления", false);
+            form.style.display = "none";
+            rolesSection.style.display = "none";
+            showMsg(`Пользователь #${id} удалён`, true);
+            uidInput.value = "";
+            currentUserId = null;
+          } catch {
+            showMsg("Сетевая ошибка при удалении", false);
+          }
         });
-        const body = await r.json().catch(()=> ({}));
-        if (!r.ok) return showMsg(body.detail || 'Ошибка обновления', false);
-        showMsg(`Изменения сохранены для пользователя #${body.user_id}`, true);
-      }catch{ showMsg('Сетевая ошибка при сохранении', false); }
-    });
 
-    document.getElementById('deleteBtn').addEventListener('click', async () => {
-      clearMsg();
-      const id = parseInt(uidInput.value, 10);
-      if (!id) return showMsg('Сначала загрузите пользователя', false);
-      if (!confirm(`Удалить пользователя #${id}? Это действие необратимо.`)) return;
+      uidInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          loadUser();
+        }
+      });
 
-      try{
-        const r = await fetch(`/api/users/${id}`, { method:'DELETE' });
-        const body = await r.json().catch(()=> ({}));
-        if (!r.ok) return showMsg(body.detail || 'Ошибка удаления', false);
-        form.style.display = 'none';
-        rolesSection.style.display = 'none';
-        showMsg(`Пользователь #${id} удалён`, true);
-        uidInput.value = '';
-        currentUserId = null;
-      }catch{ showMsg('Сетевая ошибка при удалении', false); }
-    });
+      // автозагрузка: ?id=... или ?create=1, а также путь /create
+      document.addEventListener("DOMContentLoaded", async () => {
+        await loadAllRoles(); // подгружаем список всех ролей один раз
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+        const createFlag = params.get("create");
 
-    uidInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); loadUser(); } });
+        if (createFlag === "1" || window.location.pathname === "/user-create") {
+          isCreate = true;
+          form.style.display = "block";
+          document.querySelector(".title").textContent =
+            "Создание пользователя";
+          document.querySelector(".subtitle").textContent =
+            "Заполни форму и нажми «Создать пользователя»";
+          document.getElementById("last_name").value = "";
+          document.getElementById("first_name").value = "";
+          document.getElementById("email").value = "";
+          document.getElementById("login").value = "";
+          document.getElementById("password").value = "";
+          document.getElementById("lookupRow").style.display = "none";
+          rolesSection.style.display = "none";
+          deleteBtn.style.display = "none";
+          saveBtn.textContent = "Создать пользователя";
+          return;
+        }
 
-    // автозагрузка: ?id=... или ?create=1, а также путь /create
-    document.addEventListener('DOMContentLoaded', async () => {
-      await loadAllRoles(); // подгружаем список всех ролей один раз
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get('id');
-      const createFlag = params.get('create');
-
-      if (createFlag === '1' || window.location.pathname === '/create'){
-        isCreate = true;
-        form.style.display = 'block';
-        document.querySelector('.title').textContent = 'Создание пользователя';
-        document.querySelector('.subtitle').textContent = 'Заполни форму и нажми «Создать пользователя»';
-        document.getElementById('last_name').value  = '';
-        document.getElementById('first_name').value = '';
-        document.getElementById('email').value      = '';
-        document.getElementById('login').value      = '';
-        document.getElementById('password').value   = '';
-        document.getElementById('lookupRow').style.display = 'none';
-        rolesSection.style.display = 'none';
-        deleteBtn.style.display = 'none';
-        saveBtn.textContent = 'Создать пользователя';
-        return;
-      }
-
-      if (id) {
-        uidInput.value = id;
-        loadUser();
-      }
-    });
-  </script>
-</body>
+        if (id) {
+          uidInput.value = id;
+          loadUser();
+        }
+      });
+    </script>
+  </body>
 </html>

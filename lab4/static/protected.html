@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Защищённая страница</title>
+  </head>
+  <body>
+    <div style="float: right">
+      <span id="who"></span> |
+      <a href="#" id="logout">Выйти</a>
+    </div>
+
+    <h1>Защищённая страница</h1>
+    <div id="message">Загружаю...</div>
+    <p><a href="/stats">Статистика посещений</a></p>
+
+    <script>
+      async function load() {
+        // получаем визит и число заходов
+        try {
+          const res = await fetch("/api/visit?page=protected_page");
+          if (res.status === 401) {
+            // не авторизован — редирект на страницу логина
+            window.location.href = "/login";
+            return;
+          }
+          const data = await res.json();
+          document.getElementById("message").textContent = data.message;
+        } catch (e) {
+          document.getElementById("message").textContent =
+            "Ошибка связи с сервером";
+        }
+
+        // попробуем отобразить имя из сессии (через /api/me можно добавить отдельный эндпоинт,
+        // но тут просто сделаем запрос на /api/stats чтобы проверить авторизацию и взять session)
+        // Для простоты — попытаемся сделать fetch на /api/stats с page=protected_page и показать login
+        try {
+          const s = await fetch("/api/stats?page=protected_page");
+          if (s.status === 401) {
+            window.location.href = "/login";
+            return;
+          }
+          // если 200 — надо получить имя текущей сессии через легкий GET (в идеале /api/me)
+          // Но у нас в сессии не вернули имя через API — поэтому не показываем. Можно добавить /api/auth/me если нужно.
+        } catch (e) {}
+      }
+
+      document.getElementById("logout").addEventListener("click", async (e) => {
+        e.preventDefault();
+        await fetch("/auth/logout", { method: "POST" });
+        window.location.href = "/login";
+      });
+
+      load();
+    </script>
+  </body>
+</html>

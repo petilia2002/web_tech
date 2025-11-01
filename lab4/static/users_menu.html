@@ -174,8 +174,10 @@
               <option value="50">50 на страницу</option>
             </select>
             <button id="apply" class="btn btn-outline">Применить</button>
-            <a class="btn btn-primary" href="/edit">Открыть форму по ID</a>
-            <a class="btn btn-primary" href="/create">Создать пользователя</a>
+            <a class="btn btn-primary" href="/user-edit">Открыть форму по ID</a>
+            <a class="btn btn-primary" href="/user-create"
+              >Создать пользователя</a
+            >
             <!-- НОВОЕ: переход в меню ролей -->
             <a
               class="btn btn-outline"
@@ -278,14 +280,15 @@
           const a = document.createElement("a");
           a.className = "link";
           a.textContent = "Редактировать";
-          a.href = "/edit?id=" + encodeURIComponent(it.user_id);
+          a.href = "/user-edit?id=" + encodeURIComponent(it.user_id);
           tdAct.appendChild(a);
 
           tr.append(tdId, tdName, tdLogin, tdEmail, tdAct);
           tr.style.cursor = "pointer";
           tr.addEventListener("click", (ev) => {
             if (ev.target.tagName.toLowerCase() !== "a") {
-              window.location = "/edit?id=" + encodeURIComponent(it.user_id);
+              window.location =
+                "/user-edit?id=" + encodeURIComponent(it.user_id);
             }
           });
 

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Статистика</title>
+  </head>
+  <body>
+    <h1>Статистика посещений (protected_page)</h1>
+    <ol id="list">
+      Загружаю...
+    </ol>
+    <p><a href="/protected">Назад на защищённую страницу</a></p>
+
+    <script>
+      async function loadStats() {
+        try {
+          const res = await fetch("/api/stats?page=protected_page");
+          if (res.status === 401) {
+            window.location.href = "/login";
+            return;
+          }
+          const data = await res.json();
+          const list = document.getElementById("list");
+          list.innerHTML = "";
+          if (!data.items || data.items.length === 0) {
+            list.innerHTML = "<li>Нет данных</li>";
+            return;
+          }
+          data.items.forEach((it) => {
+            const li = document.createElement("li");
+            li.textContent = `Пользователь ${it.login} заходил на страницу ${it.page} ${it.count} раз`;
+            list.appendChild(li);
+          });
+        } catch (e) {
+          document.getElementById("list").innerHTML =
+            "<li>Ошибка связи с сервером</li>";
+        }
+      }
+
+      loadStats();
+    </script>
+  </body>
+</html>
