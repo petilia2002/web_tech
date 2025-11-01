@@ -4,12 +4,8 @@
     <meta charset="utf-8" />
     <title>Защищённая страница</title>
     <style>
-      #topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
+      body {
+        margin: 0;
       }
       #user-area {
         font-size: 0.95rem;
@@ -18,11 +14,63 @@
         color: #0066cc;
         text-decoration: none;
       }
+      .btn {
+        appearance: none;
+        border: 0;
+        cursor: pointer;
+        user-select: none;
+        padding: 11px 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: transform 0.05s, background-color 0.2s;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn-primary {
+        background: #0d6efd;
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: #0b5ed7;
+      }
+      #topbar {
+        font-family: "Roboto", sans-serif;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
+        border-bottom: 1px solid #ddd;
+      }
+      .bar_content {
+        display: flex;
+        column-gap: 60px;
+      }
+      .navbar {
+        display: flex;
+        column-gap: 20px;
+      }
+      .navbar a {
+        color: #000;
+        text-decoration: none;
+      }
     </style>
   </head>
   <body>
     <div id="topbar">
-      <div><strong>Защищённая страница</strong></div>
+      <div class="bar_content">
+        <div><strong>Web-приложение</strong></div>
+        <div class="navbar">
+          <a href="/login">Вход</a>
+          <a href="/users">Пользователи</a>
+          <a href="/roles">Роли</a>
+          <a href="/protected">Приветствие</a>
+          <a href="/stats">Статистика</a>
+          <a href="/companies">Компании</a>
+          <a href="/cart">Корзина</a>
+        </div>
+      </div>
       <div id="user-area">
         <!-- сюда вставим "Вы вошли как ... / Выйти" -->
         <span id="who"></span>
@@ -32,6 +80,9 @@
     </div>
 
     <main style="padding: 16px">
+      <div style="align-self: end; display: flex; gap: 8px; flex-wrap: wrap">
+        <a href="/" class="btn btn-primary">← На главную</a>
+      </div>
       <h2 id="headline">Привет!</h2>
       <div id="message">Загружаю...</div>
       <p><a href="/stats">Перейти к статистике посещений</a></p>

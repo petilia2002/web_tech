@@ -146,9 +146,49 @@
       .link:hover {
         text-decoration: underline;
       }
+      #topbar {
+        font-family: "Roboto", sans-serif;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
+        border-bottom: 1px solid #ddd;
+      }
+      .bar_content {
+        display: flex;
+        column-gap: 60px;
+      }
+      .navbar {
+        display: flex;
+        column-gap: 20px;
+      }
+      .navbar a {
+        color: #000;
+        text-decoration: none;
+      }
     </style>
   </head>
   <body>
+    <div id="topbar">
+      <div class="bar_content">
+        <div><strong>Web-приложение</strong></div>
+        <div class="navbar">
+          <a href="/login">Вход</a>
+          <a href="/users">Пользователи</a>
+          <a href="/roles">Роли</a>
+          <a href="/protected">Приветствие</a>
+          <a href="/stats">Статистика</a>
+          <a href="/companies">Компании</a>
+          <a href="/cart">Корзина</a>
+        </div>
+      </div>
+      <div id="user-area">
+        <!-- сюда вставим "Вы вошли как ... / Выйти" -->
+        <span id="who"></span>
+        <span id="sep" style="display: none"> | </span>
+        <a href="#" id="logout" style="display: none">Выйти</a>
+      </div>
+    </div>
     <div class="container">
       <div class="card">
         <div class="card__header">
@@ -185,6 +225,11 @@
               title="Перейти к управлению ролями"
               >Меню ролей</a
             >
+            <div
+              style="align-self: end; display: flex; gap: 8px; flex-wrap: wrap"
+            >
+              <a href="/" class="btn btn-primary">← На главную</a>
+            </div>
             <span class="muted" id="meta"></span>
           </div>
 
@@ -216,6 +261,42 @@
     </div>
 
     <script>
+      async function fetchMe() {
+        try {
+          const res = await fetch("/auth/me", {
+            credentials: "same-origin",
+          });
+          if (res.status === 401) {
+            // не авторизован — редирект на страницу логина
+            window.location.href = "/login";
+            return null;
+          }
+          if (!res.ok) {
+            throw new Error("Ошибка при получении сессии");
+          }
+          return await res.json();
+        } catch (err) {
+          console.error(err);
+          // на ошибку — редирект на логин (безопаснее)
+          window.location.href = "/login";
+          return null;
+        }
+      }
+
+      async function doLogout() {
+        try {
+          // POST logout
+          await fetch("/auth/logout", {
+            method: "POST",
+            credentials: "same-origin",
+          });
+        } catch (e) {
+          console.warn("Logout request failed", e);
+        } finally {
+          window.location.href = "/login?logged_out=1";
+        }
+      }
+
       const state = {
         q: "",
         offset: 0,
@@ -334,7 +415,26 @@
         }, 350);
       });
 
-      load();
+      (async function init() {
+        const me = await fetchMe();
+        if (!me) return;
+
+        // Показать имя и кнопку выхода
+        const who = document.getElementById("who");
+        const logoutLink = document.getElementById("logout");
+        const sep = document.getElementById("sep");
+
+        who.textContent = `Вы вошли как ${me.full_name || me.login}`;
+        sep.style.display = "inline";
+        logoutLink.style.display = "inline";
+        logoutLink.onclick = function (e) {
+          e.preventDefault();
+          doLogout();
+        };
+
+        // Запрашиваем список пользователей
+        await load();
+      })();
     </script>
   </body>
 </html>

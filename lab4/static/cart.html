@@ -4,9 +4,15 @@
     <meta charset="utf-8" />
     <title>Ваш заказ</title>
     <style>
+      /* * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      } */
       body {
         font-family: Arial, sans-serif;
-        padding: 16px;
+        /* padding: 16px; */
+        margin: 0;
       }
       table {
         border-collapse: collapse;
@@ -21,23 +27,50 @@
         background: #f5f5f5;
         text-align: left;
       }
+      button {
+        padding: 6px 12px;
+      }
       #topbar {
+        font-family: "Roboto", sans-serif;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 12px;
+        padding: 20px 30px;
+        border-bottom: 1px solid #ddd;
       }
-      button {
-        padding: 6px 12px;
+      .bar_content {
+        display: flex;
+        column-gap: 60px;
+      }
+      .navbar {
+        display: flex;
+        column-gap: 20px;
+      }
+      .navbar a {
+        color: #000;
+        text-decoration: none;
       }
     </style>
   </head>
   <body>
     <div id="topbar">
-      <div><a href="/companies">← На главную</a></div>
+      <div class="bar_content">
+        <div><strong>Web-приложение</strong></div>
+        <div class="navbar">
+          <a href="/login">Вход</a>
+          <a href="/users">Пользователи</a>
+          <a href="/roles">Роли</a>
+          <a href="/protected">Приветствие</a>
+          <a href="/stats">Статистика</a>
+          <a href="/companies">Компании</a>
+          <a href="/cart">Корзина</a>
+        </div>
+      </div>
       <div id="user-area">
-        <span id="who"></span><span id="sep" style="display: none"> | </span
-        ><a id="logout" href="#" style="display: none">Выйти</a>
+        <!-- сюда вставим "Вы вошли как ... / Выйти" -->
+        <span id="who"></span>
+        <span id="sep" style="display: none"> | </span>
+        <a href="#" id="logout" style="display: none">Выйти</a>
       </div>
     </div>
 

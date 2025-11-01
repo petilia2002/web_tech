@@ -30,12 +30,44 @@
       main {
         padding: 16px;
       }
+      #topbar {
+        font-family: "Roboto", sans-serif;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
+        border-bottom: 1px solid #ddd;
+      }
+      .bar_content {
+        display: flex;
+        column-gap: 60px;
+      }
+      .navbar {
+        display: flex;
+        column-gap: 20px;
+      }
+      .navbar a {
+        color: #000;
+        text-decoration: none;
+      }
     </style>
   </head>
   <body>
     <div id="topbar">
-      <div><strong>Статистика посещений (protected_page)</strong></div>
+      <div class="bar_content">
+        <div><strong>Web-приложение</strong></div>
+        <div class="navbar">
+          <a href="/login">Вход</a>
+          <a href="/users">Пользователи</a>
+          <a href="/roles">Роли</a>
+          <a href="/protected">Приветствие</a>
+          <a href="/stats">Статистика</a>
+          <a href="/companies">Компании</a>
+          <a href="/cart">Корзина</a>
+        </div>
+      </div>
       <div id="user-area">
+        <!-- сюда вставим "Вы вошли как ... / Выйти" -->
         <span id="who"></span>
         <span id="sep" style="display: none"> | </span>
         <a href="#" id="logout" style="display: none">Выйти</a>
