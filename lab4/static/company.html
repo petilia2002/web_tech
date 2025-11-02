@@ -6,7 +6,8 @@
     <style>
       body {
         font-family: Arial, sans-serif;
-        padding: 16px;
+        padding: 0px;
+        margin: 0;
       }
       table {
         border-collapse: collapse;
@@ -25,20 +26,565 @@
         opacity: 0.6;
         cursor: not-allowed;
       }
+
+      :root {
+        --primary: #0d6efd;
+        --primary-600: #0b5ed7;
+        --primary-300: #66b0ff;
+        --primary-faint: rgba(13, 110, 253, 0.06);
+        --bg: #f7fbff;
+        --card: #ffffff;
+        --muted: #6c757d;
+        --text: #072142;
+        --radius: 12px;
+      }
+
+      body {
+        font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      }
+
+      /* Топбар */
       #topbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 12px;
+        padding: 18px 28px;
+        border-bottom: 1px solid rgba(13, 110, 253, 0.08);
+        background: linear-gradient(
+          90deg,
+          rgba(13, 110, 253, 0.03),
+          transparent 60%
+        );
+        gap: 12px;
+      }
+
+      .bar_content {
+        display: flex;
+        column-gap: 48px;
+        align-items: center;
+      }
+
+      .bar_content > div:first-child {
+        font-weight: 700;
+        color: var(--primary-600);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .navbar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .navbar a {
+        color: var(--primary-600);
+        text-decoration: none;
+        padding: 7px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background-color 0.12s, transform 0.06s;
+      }
+
+      .navbar a:hover,
+      .navbar a:focus {
+        background: var(--primary-faint);
+        transform: translateY(-1px);
+        outline: none;
+      }
+
+      /* User area */
+      #user-area {
+        color: #07315f;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      #logout {
+        padding: 6px 10px;
+        border-radius: 8px;
+        color: var(--primary-600);
+        text-decoration: none;
+      }
+      #logout:hover {
+        background: var(--primary-faint);
+      }
+
+      /* Дополнительные стили — вставьте в конец <style> или в отдельный файл */
+      /* Цветовая палитра (используется основной #0d6efd) */
+      :root {
+        --primary: #0d6efd;
+        --primary-600: #0b5ed7;
+        --primary-300: #66b0ff;
+        --faint: rgba(13, 110, 253, 0.06);
+        --bg: #f7fbff;
+        --muted: #6c757d;
+        --text: #072142;
+        --radius: 12px;
+        --glass: rgba(255, 255, 255, 0.6);
+      }
+
+      /* Страница в целом */
+      body {
+        background: linear-gradient(180deg, #fbfeff 0%, var(--bg) 100%);
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Топбар — более выразительный, но мягкий */
+      #topbar {
+        background: linear-gradient(
+          90deg,
+          rgba(13, 110, 253, 0.03),
+          transparent 60%
+        );
+        border-bottom: 1px solid rgba(13, 110, 253, 0.06);
+        padding: 16px 24px !important;
+        box-shadow: 0 6px 18px rgba(13, 110, 253, 0.03);
+        backdrop-filter: blur(3px);
+      }
+
+      /* Акцент для названия приложения в верхней панели */
+      .bar_content > div:first-child {
+        color: var(--primary-600);
+        font-weight: 800;
+        letter-spacing: 0.1px;
+      }
+
+      /* Навигация */
+      .navbar a {
+        color: var(--primary-600);
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: transform 0.08s, background-color 0.12s, color 0.12s;
+      }
+      .navbar a:hover,
+      .navbar a:focus {
+        background: var(--faint);
+        transform: translateY(-2px);
+        outline: none;
+      }
+
+      /* User area */
+      #user-area {
+        color: #07315f;
+        font-weight: 600;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      #logout {
+        color: var(--primary-600);
+        padding: 6px 10px;
+        border-radius: 8px;
+        text-decoration: none;
+      }
+      #logout:hover {
+        background: var(--faint);
+      }
+
+      /* Заголовок страницы */
+      h1#headline {
+        margin: 18px 24px;
+        font-size: 1.6rem;
+        color: #06326a;
+        font-weight: 700;
+      }
+
+      /* Стилизуем таблицу как "карточку" */
+      #cars-table {
+        width: calc(100% - 48px);
+        margin: 0 24px 36px;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 14px 36px rgba(13, 110, 253, 0.04);
+        background: linear-gradient(180deg, #ffffff, #fbfdff);
+      }
+
+      /* Заголовки столбцов */
+      #cars-table thead th {
+        padding: 14px 16px;
+        background: linear-gradient(
+          180deg,
+          rgba(13, 110, 253, 0.03),
+          transparent
+        );
+        color: var(--primary-600);
+        font-weight: 700;
+        text-align: left;
+        border-bottom: 1px solid rgba(13, 110, 253, 0.06);
+      }
+
+      /* Ячейки */
+      #cars-table td {
+        padding: 12px 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(13, 110, 253, 0.03);
+        background: transparent;
+      }
+
+      /* Зебра-эффект (тонкий) */
+      #cars-table tbody tr:nth-child(even) td {
+        background: rgba(13, 110, 253, 0.01);
+      }
+
+      /* Hover эффект для строки */
+      #cars-table tbody tr {
+        transition: transform 0.14s, box-shadow 0.14s, background-color 0.12s;
+      }
+      #cars-table tbody tr:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 36px rgba(13, 110, 253, 0.06);
+        background: linear-gradient(
+          90deg,
+          rgba(13, 110, 253, 0.02),
+          transparent
+        );
+      }
+
+      /* Цена */
+      .price {
+        color: var(--primary-600);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      /* Кнопки действий — в тон основной палитры */
+      .btn {
+        appearance: none;
+        border: 0;
+        cursor: pointer;
+        user-select: none;
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: transform 0.06s, box-shadow 0.12s, opacity 0.12s;
+        font-family: inherit;
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn-primary {
+        background: linear-gradient(180deg, var(--primary), var(--primary-600));
+        color: #fff;
+        box-shadow: 0 8px 20px rgba(13, 110, 253, 0.12);
+      }
+      .btn-primary:hover {
+        box-shadow: 0 12px 28px rgba(11, 94, 215, 0.14);
+      }
+
+      /* Заблокированные кнопки */
+      button[disabled],
+      .btn[aria-disabled="true"] {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* Плейсхолдеры/сообщения */
+      .placeholder {
+        color: var(--muted);
+        padding: 14px;
+        text-align: center;
+      }
+
+      /* Фокус и доступность */
+      a:focus,
+      button:focus,
+      .navbar a:focus {
+        outline: 3px solid rgba(13, 110, 253, 0.14);
+        outline-offset: 2px;
+        border-radius: 8px;
+      }
+
+      /* Адаптив — на узких экранах делаем карточный вид */
+      @media (max-width: 720px) {
+        #cars-table {
+          width: calc(100% - 28px);
+          margin: 0 14px 24px;
+          box-shadow: none;
+        }
+        #cars-table,
+        #cars-table thead,
+        #cars-table tbody,
+        #cars-table th,
+        #cars-table td,
+        #cars-table tr {
+          display: block;
+          width: 100%;
+        }
+        #cars-table thead {
+          display: none;
+        }
+        #cars-table tbody tr {
+          margin: 10px 0;
+          border-radius: 12px;
+          padding: 12px;
+          background: linear-gradient(180deg, #fff, #fbfdff);
+          box-shadow: 0 8px 22px rgba(13, 110, 253, 0.04);
+          border: 1px solid rgba(13, 110, 253, 0.06);
+        }
+        #cars-table td {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px 12px;
+          border-bottom: 0;
+        }
+        #cars-table td::before {
+          content: attr(data-label);
+          color: var(--muted);
+          font-weight: 700;
+          margin-right: 10px;
+          min-width: 90px;
+        }
+        .btn {
+          width: 100%;
+          justify-content: center;
+          padding: 10px;
+        }
+      }
+
+      /* Гарантируем видимый контур таблицы и корректные радиусы углов */
+      #cars-table {
+        /* явный контур вокруг всей таблицы */
+        border: 1px solid rgba(13, 110, 253, 0.12);
+        border-collapse: separate; /* оставляем separate для корректных радиусов */
+        border-spacing: 0; /* нулевой gap, чтобы контур был ровным */
+        border-radius: var(--radius);
+        overflow: hidden; /* чтобы скруглённые углы работали */
+      }
+
+      /* Убираем внешние бордеры у крайних ячеек, чтобы не было двойных линий */
+      #cars-table thead th,
+      #cars-table tbody td {
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        border-bottom: 1px solid rgba(13, 110, 253, 0.04); /* только нижний разделитель */
+      }
+
+      /* Верхние скругления — применяем к заголовкам */
+      #cars-table thead th:first-child {
+        border-top-left-radius: var(--radius);
+      }
+      #cars-table thead th:last-child {
+        border-top-right-radius: var(--radius);
+      }
+
+      /* Нижние скругления — применяем к последней строке */
+      #cars-table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: var(--radius);
+      }
+      #cars-table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: var(--radius);
+      }
+
+      /* Вертикальные разделители (опционально) — если хочешь вертикальные линии между колонками */
+      #cars-table tbody td + td,
+      #cars-table thead th + th {
+        border-left: 1px solid rgba(13, 110, 253, 0.04);
+      }
+
+      /* Мобильный режим: когда строки становятся блоками, контур таблицы уже задаёт рамку,
+   поэтому убираем лишние бордеры у внутренних блоков */
+      @media (max-width: 720px) {
+        #cars-table {
+          border: 1px solid rgba(13, 110, 253, 0.12);
+        }
+        #cars-table tbody tr {
+          border: none;
+          box-shadow: none;
+        }
+        #cars-table td {
+          border: 0;
+          border-bottom: 1px solid rgba(13, 110, 253, 0.03);
+        }
+        /* Последний элемент внутри карточки не нуждается в нижнем разделителе */
+        #cars-table tbody tr td:last-child {
+          border-bottom: 0;
+        }
+      }
+
+      /* Дополнительные стили для кнопки "Добавить в заказ" */
+      /* Вставьте этот блок в конец ваших стилей (или в отдельный файл) */
+
+      /* Основной стиль — чуть более крупная, "сочная" кнопка */
+      .btn.btn-primary {
+        position: relative; /* для псевдоэлементов/спиннера */
+        overflow: hidden; /* чтобы блеск не выходил за края */
+        padding: 10px 14px; /* чуть компактнее по высоте */
+        gap: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: linear-gradient(180deg, var(--primary), var(--primary-600));
+        color: #fff;
+        font-weight: 800;
+        box-shadow: 0 8px 20px rgba(13, 110, 253, 0.14),
+          inset 0 -2px rgba(0, 0, 0, 0.06);
+        transition: transform 0.12s ease, box-shadow 0.12s ease,
+          opacity 0.12s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* Иконка внутри кнопки (если используется inline SVG с классом .ic) */
+      .btn.btn-primary .ic {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 16px;
+        display: inline-block;
+        line-height: 0;
+        transform-origin: center;
+        transition: transform 0.18s ease;
+      }
+
+      /* Блеск / глянец — появляется при hover */
+      .btn.btn-primary::before {
+        content: "";
+        position: absolute;
+        left: -40%;
+        top: -30%;
+        width: 180%;
+        height: 120%;
+        background: linear-gradient(
+          120deg,
+          rgba(255, 255, 255, 0.28),
+          rgba(255, 255, 255, 0.06) 25%,
+          rgba(255, 255, 255, 0.02) 40%,
+          transparent 60%
+        );
+        transform: rotate(18deg) translateY(0);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease,
+          transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1);
+        mix-blend-mode: overlay;
+      }
+
+      /* Hover / focus эффекты */
+      .btn.btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 40px rgba(13, 110, 253, 0.16),
+          inset 0 -2px rgba(0, 0, 0, 0.06);
+      }
+      .btn.btn-primary:hover::before {
+        opacity: 1;
+        transform: rotate(18deg) translateY(-6px);
+      }
+      .btn.btn-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 6px 16px rgba(13, 110, 253, 0.1),
+          inset 0 -1px rgba(0, 0, 0, 0.04);
+      }
+
+      /* Фокусная рамка для доступности */
+      .btn.btn-primary:focus {
+        outline: 3px solid rgba(13, 110, 253, 0.18);
+        outline-offset: 3px;
+        box-shadow: 0 16px 36px rgba(13, 110, 253, 0.14);
+      }
+
+      /* Состояние отключено */
+      .btn.btn-primary[disabled],
+      .btn.btn-primary[aria-disabled="true"] {
+        opacity: 0.62;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* Подсказка: показываем спиннер если кнопке назначен атрибут data-loading="true"
+   (скрипт может ставить/снимать этот атрибут при отправке запроса) */
+      @keyframes __btn_spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .btn.btn-primary[data-loading="true"] {
+        pointer-events: none;
+        opacity: 0.95;
+      }
+      /* скрываем иконку (если есть) и добавляем круговой спиннер */
+      .btn.btn-primary[data-loading="true"] .ic {
+        visibility: hidden;
+        transform: none;
+      }
+      /* спиннер в правой части кнопки */
+      .btn.btn-primary[data-loading="true"]::after {
+        content: "";
+        position: absolute;
+        right: 10px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.45);
+        border-top-color: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) inset;
+        animation: __btn_spin 0.9s linear infinite;
+        transform-origin: center;
+      }
+
+      /* Небольшая "поп" анимация для иконки при появлении hover */
+      .btn.btn-primary:hover .ic {
+        transform: translateY(-1px) scale(1.02);
+      }
+
+      /* Если желаешь компактный вариант (например в таблице) — используем utility-класс */
+      .btn.btn-primary.btn-sm {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+
+      /* Тонкая граница вокруг текста кнопки (опция, улучшает читаемость на светлом фоне) */
+      .btn.btn-primary .label-wrap {
+        display: inline-block;
+        transform: translateZ(0); /* вспомогательное для сглаживания */
+      }
+
+      /* Поддержка для кнопок в мобильной карточной версии: делаем кнопку полной ширины */
+      @media (max-width: 720px) {
+        .btn.btn-primary {
+          width: 100%;
+          justify-content: center;
+          padding: 10px 12px;
+        }
+        .btn.btn-primary::after {
+          right: 12px;
+        }
       }
     </style>
   </head>
   <body>
     <div id="topbar">
-      <div><a href="/companies">← Фирмы</a> | <a href="/cart">Корзина</a></div>
-      <div id="user-area">
-        <span id="who"></span><span id="sep" style="display: none"> | </span
-        ><a id="logout" href="#" style="display: none">Выйти</a>
+      <div class="bar_content">
+        <div><strong>Web-приложение</strong></div>
+        <div class="navbar" role="navigation" aria-label="Главное меню">
+          <a href="/login">Вход</a>
+          <a href="/users">Пользователи</a>
+          <a href="/roles">Роли</a>
+          <a href="/protected">Приветствие</a>
+          <a href="/stats">Статистика</a>
+          <a href="/companies">Компании</a>
+          <a href="/cart">Корзина</a>
+        </div>
+      </div>
+
+      <div id="user-area" aria-live="polite">
+        <span id="who"></span>
+        <span id="sep" style="display: none"> | </span>
+        <a href="#" id="logout" style="display: none">Выйти</a>
       </div>
     </div>
 
@@ -128,7 +674,7 @@
           const data = await res.json();
           document.getElementById(
             "headline"
-          ).textContent = `Фирма: ${data.company.name}`;
+          ).textContent = `${data.company.name}`;
 
           const tbody = document.querySelector("#cars-table tbody");
           tbody.innerHTML = "";
@@ -148,6 +694,7 @@
               tdAction.textContent = "Уже в заказе";
             } else {
               const btn = document.createElement("button");
+              btn.className = "btn btn-primary btn-sm";
               btn.textContent = "Добавить в заказ";
               btn.addEventListener("click", async () => {
                 btn.disabled = true;

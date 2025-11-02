@@ -4,14 +4,8 @@
     <meta charset="utf-8" />
     <title>Ваш заказ</title>
     <style>
-      /* * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      } */
       body {
         font-family: Arial, sans-serif;
-        /* padding: 16px; */
         margin: 0;
       }
       table {
@@ -30,14 +24,6 @@
       button {
         padding: 6px 12px;
       }
-      #topbar {
-        font-family: "Roboto", sans-serif;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px 30px;
-        border-bottom: 1px solid #ddd;
-      }
       .bar_content {
         display: flex;
         column-gap: 60px;
@@ -50,13 +36,327 @@
         color: #000;
         text-decoration: none;
       }
+
+      :root {
+        --primary: #0d6efd;
+        --primary-600: #0b5ed7;
+        --primary-300: #66b0ff;
+        --primary-faint: rgba(13, 110, 253, 0.06);
+        --bg: #f7fbff;
+        --card: #ffffff;
+        --muted: #6c757d;
+        --text: #072142;
+        --radius: 12px;
+      }
+
+      body {
+        font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      }
+
+      /* Топбар */
+      #topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 28px;
+        border-bottom: 1px solid rgba(13, 110, 253, 0.08);
+        background: linear-gradient(
+          90deg,
+          rgba(13, 110, 253, 0.03),
+          transparent 60%
+        );
+        gap: 12px;
+      }
+
+      .bar_content {
+        display: flex;
+        column-gap: 48px;
+        align-items: center;
+      }
+
+      .bar_content > div:first-child {
+        font-weight: 700;
+        color: var(--primary-600);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .navbar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .navbar a {
+        color: var(--primary-600);
+        text-decoration: none;
+        padding: 7px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background-color 0.12s, transform 0.06s;
+      }
+
+      .navbar a:hover,
+      .navbar a:focus {
+        background: var(--primary-faint);
+        transform: translateY(-1px);
+        outline: none;
+      }
+
+      /* User area */
+      #user-area {
+        color: #07315f;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      #logout {
+        padding: 6px 10px;
+        border-radius: 8px;
+        color: var(--primary-600);
+        text-decoration: none;
+      }
+      #logout:hover {
+        background: var(--primary-faint);
+      }
+
+      /* Дополнительные стили — вставьте в конец <style> или в отдельный файл */
+
+      /* Цвета и переменные (используем основной #0d6efd) */
+      :root {
+        --primary: #0d6efd;
+        --primary-600: #0b5ed7;
+        --primary-300: #66b0ff;
+        --faint: rgba(13, 110, 253, 0.06);
+        --bg: #f7fbff;
+        --muted: #6c757d;
+        --text: #072142;
+        --radius: 12px;
+        --card-shadow: 0 14px 36px rgba(13, 110, 253, 0.04);
+      }
+
+      /* Страница и заголовок */
+      body {
+        background: linear-gradient(180deg, #fbfeff 0%, var(--bg) 100%);
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      h1 {
+        margin: 20px 24px;
+        font-size: 1.5rem;
+        color: #06326a;
+        font-weight: 700;
+      }
+
+      /* Обёртка таблицы — единый каркас с радиусами */
+      #cart-table {
+        width: calc(100% - 48px);
+        margin: 0 24px 18px;
+        border-collapse: separate; /* чтобы скругления работали */
+        border-spacing: 0;
+        border: 1px solid rgba(13, 110, 253, 0.12);
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: linear-gradient(180deg, #fff, #fbfdff);
+        box-shadow: var(--card-shadow);
+      }
+
+      /* Заголовки столбцов — лёгкий фон и акцентный цвет */
+      #cart-table thead th {
+        padding: 14px 16px;
+        background: linear-gradient(
+          180deg,
+          rgba(13, 110, 253, 0.03),
+          transparent
+        );
+        color: var(--primary-600);
+        font-weight: 700;
+        text-align: left;
+        border-bottom: 1px solid rgba(13, 110, 253, 0.06);
+      }
+
+      /* Ячейки — убираем старые внешние бордюры и оставляем тонкие разделители */
+      #cart-table td {
+        padding: 12px 16px;
+        vertical-align: middle;
+        border: 0;
+        border-bottom: 1px solid rgba(13, 110, 253, 0.04);
+        background: transparent;
+      }
+
+      /* Убираем двойные линии и добавляем вертикальные разделители опционально */
+      #cart-table thead th + th,
+      #cart-table tbody td + td {
+        /* тонкая вертикальная линия между колонками */
+        border-left: 1px solid rgba(13, 110, 253, 0.03);
+      }
+
+      /* Скругления для углов */
+      #cart-table thead th:first-child {
+        border-top-left-radius: var(--radius);
+      }
+      #cart-table thead th:last-child {
+        border-top-right-radius: var(--radius);
+      }
+      #cart-table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: var(--radius);
+      }
+      #cart-table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: var(--radius);
+      }
+
+      /* Зебра и hover-эффект для строк */
+      #cart-table tbody tr:nth-child(even) td {
+        background: rgba(13, 110, 253, 0.01);
+      }
+      #cart-table tbody tr {
+        transition: transform 0.14s, box-shadow 0.14s, background-color 0.12s;
+      }
+      #cart-table tbody tr:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 36px rgba(13, 110, 253, 0.06);
+        background: linear-gradient(
+          90deg,
+          rgba(13, 110, 253, 0.02),
+          transparent
+        );
+      }
+
+      /* Цена — акцент */
+      #cart-table .price,
+      #cart-table td:nth-child(4) {
+        color: var(--primary-600);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      /* Placeholder / сообщения */
+      #cart-table tbody td[colspan] {
+        text-align: center;
+        color: var(--muted);
+        padding: 18px;
+      }
+
+      /* Секция с суммой */
+      p {
+        max-width: calc(100% - 48px);
+        margin: 12px 24px;
+        font-size: 1rem;
+        color: #083058;
+      }
+      p strong#total {
+        background: linear-gradient(90deg, var(--primary-300), var(--primary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 800;
+        font-size: 1.05rem;
+      }
+
+      /* Кнопка очистки — стильная, в тон палитры */
+      #clear {
+        margin: 12px 24px 48px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: none;
+        background: linear-gradient(180deg, var(--primary), var(--primary-600));
+        color: #fff;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 10px 26px rgba(13, 110, 253, 0.12),
+          inset 0 -2px rgba(255, 255, 255, 0.05);
+        transition: transform 0.12s ease, box-shadow 0.12s ease,
+          opacity 0.12s ease;
+      }
+      #clear:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 40px rgba(13, 110, 253, 0.14);
+      }
+      #clear:active {
+        transform: translateY(0);
+        box-shadow: 0 6px 16px rgba(13, 110, 253, 0.08);
+      }
+      #clear[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+      }
+
+      /* Доступность: фокус */
+      a:focus,
+      button:focus,
+      #cart-table td:focus {
+        outline: 3px solid rgba(13, 110, 253, 0.14);
+        outline-offset: 3px;
+        border-radius: 8px;
+      }
+
+      /* Мобильная версия: таблица превращается в карточки */
+      @media (max-width: 720px) {
+        #cart-table {
+          width: calc(100% - 28px);
+          margin: 0 14px 18px;
+          border: 1px solid rgba(13, 110, 253, 0.1);
+          box-shadow: none;
+        }
+        #cart-table,
+        #cart-table thead,
+        #cart-table tbody,
+        #cart-table th,
+        #cart-table td,
+        #cart-table tr {
+          display: block;
+          width: 100%;
+        }
+        #cart-table thead {
+          display: none;
+        }
+        #cart-table tbody tr {
+          margin: 10px 0;
+          border-radius: 12px;
+          padding: 10px;
+          background: linear-gradient(180deg, #fff, #fbfdff);
+          box-shadow: 0 8px 22px rgba(13, 110, 253, 0.04);
+          border: 1px solid rgba(13, 110, 253, 0.06);
+        }
+        #cart-table td {
+          display: flex;
+          justify-content: space-between;
+          padding: 10px 12px;
+          border: 0;
+          border-bottom: 1px solid rgba(13, 110, 253, 0.03);
+        }
+        #cart-table td::before {
+          content: attr(data-label);
+          color: var(--muted);
+          font-weight: 700;
+          margin-right: 12px;
+          min-width: 90px;
+          display: inline-block;
+        }
+        #cart-table td:last-child {
+          border-bottom: 0;
+        }
+        #clear {
+          width: calc(100% - 28px);
+          margin: 12px 14px 34px;
+        }
+        p {
+          margin: 12px 14px;
+        }
+      }
     </style>
   </head>
   <body>
     <div id="topbar">
       <div class="bar_content">
         <div><strong>Web-приложение</strong></div>
-        <div class="navbar">
+        <div class="navbar" role="navigation" aria-label="Главное меню">
           <a href="/login">Вход</a>
           <a href="/users">Пользователи</a>
           <a href="/roles">Роли</a>
@@ -66,8 +366,8 @@
           <a href="/cart">Корзина</a>
         </div>
       </div>
-      <div id="user-area">
-        <!-- сюда вставим "Вы вошли как ... / Выйти" -->
+
+      <div id="user-area" aria-live="polite">
         <span id="who"></span>
         <span id="sep" style="display: none"> | </span>
         <a href="#" id="logout" style="display: none">Выйти</a>

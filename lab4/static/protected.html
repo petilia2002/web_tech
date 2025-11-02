@@ -3,57 +3,308 @@
   <head>
     <meta charset="utf-8" />
     <title>Защищённая страница</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <style>
+      :root {
+        --primary: #0d6efd;
+        --primary-600: #0b5ed7;
+        --primary-300: #66b0ff;
+        --primary-faint: rgba(13, 110, 253, 0.06);
+        --bg: #f7fbff;
+        --card: #ffffff;
+        --muted: #6c757d;
+        --text: #072142;
+        --radius: 12px;
+      }
+
+      /* Базовая */
+      html,
       body {
+        height: 100%;
         margin: 0;
+        font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+        background: linear-gradient(180deg, #fbfeff 0%, var(--bg) 100%);
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+      a:hover,
+      a:focus {
+        text-decoration: underline;
+        color: var(--primary-600);
+      }
+      .muted {
+        color: var(--muted);
+      }
+
+      /* Топбар */
+      #topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 28px;
+        gap: 12px;
+        background: linear-gradient(
+          90deg,
+          rgba(13, 110, 253, 0.03),
+          transparent 60%
+        );
+        border-bottom: 1px solid rgba(13, 110, 253, 0.06);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(4px);
+      }
+      .bar_content {
+        display: flex;
+        align-items: center;
+        gap: 44px;
+      }
+      .brand {
+        font-weight: 800;
+        color: var(--primary-600);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .brand .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: linear-gradient(180deg, var(--primary), var(--primary-600));
+        display: inline-block;
+        box-shadow: 0 6px 16px rgba(13, 110, 253, 0.12);
+      }
+      .navbar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .navbar a {
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        color: var(--primary-600);
+        transition: transform 0.08s, background-color 0.12s;
+      }
+      .navbar a:hover {
+        background: var(--primary-faint);
+        transform: translateY(-2px);
       }
       #user-area {
         font-size: 0.95rem;
+        color: #07315f;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
-      a {
-        color: #0066cc;
+      #logout {
+        padding: 6px 10px;
+        border-radius: 8px;
+        color: var(--primary-600);
         text-decoration: none;
       }
+      #logout:hover {
+        background: var(--primary-faint);
+      }
+
+      /* Кнопки */
       .btn {
         appearance: none;
         border: 0;
         cursor: pointer;
         user-select: none;
-        padding: 11px 18px;
+        padding: 10px 16px;
         border-radius: 10px;
         font-weight: 600;
-        transition: transform 0.05s, background-color 0.2s;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        transition: transform 0.06s, box-shadow 0.12s;
+        background: transparent;
+        font-family: "Segoe UI", Tahoma, Arial;
       }
       .btn:active {
         transform: translateY(1px);
       }
       .btn-primary {
-        background: #0d6efd;
+        background: linear-gradient(180deg, var(--primary), var(--primary-600));
         color: #fff;
+        box-shadow: 0 8px 20px rgba(13, 110, 253, 0.12),
+          inset 0 -1px rgba(255, 255, 255, 0.06);
       }
       .btn-primary:hover {
-        background: #0b5ed7;
+        background: linear-gradient(180deg, var(--primary-600), #094bb0);
+        box-shadow: 0 12px 30px rgba(11, 94, 215, 0.14);
       }
+
+      /* Main layout */
+      main {
+        max-width: 980px;
+        margin: 22px auto;
+        padding: 18px;
+      }
+      .toolbar {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+
+      /* Карточка приветствия */
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 18px;
+        align-items: center;
+        background: linear-gradient(180deg, var(--card), #fbfdff);
+        border-radius: var(--radius);
+        padding: 20px;
+        border: 1px solid rgba(13, 110, 253, 0.06);
+        box-shadow: 0 14px 36px rgba(13, 110, 253, 0.06);
+      }
+      .headline {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #06326a;
+        line-height: 1.1;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      /* акцентный цветной текст */
+      .headline .accent {
+        background: linear-gradient(90deg, var(--primary-300), var(--primary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 800;
+      }
+
+      .hero .message {
+        color: #083058;
+        font-size: 1rem;
+        margin-top: 6px;
+      }
+
+      /* pill с количеством визитов */
+      .visits-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, var(--primary-300), var(--primary));
+        color: white;
+        font-weight: 700;
+        box-shadow: 0 8px 20px rgba(13, 110, 253, 0.12);
+        min-width: 80px;
+        justify-content: center;
+      }
+
+      /* небольшая подсказка под карточкой */
+      .hint {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      /* Маленькие украшения */
+      .sparkle {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0.4));
+        box-shadow: 0 0 18px rgba(102, 176, 255, 0.9);
+        display: inline-block;
+      }
+
+      /* адаптив */
+      @media (max-width: 720px) {
+        .hero {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+        .headline {
+          font-size: 1.25rem;
+        }
+        main {
+          padding: 14px;
+        }
+        .brand .logo {
+          width: 32px;
+          height: 32px;
+        }
+      }
+
+      /* Фокус для доступности */
+      a:focus,
+      button:focus,
+      .navbar a:focus {
+        outline: 3px solid rgba(13, 110, 253, 0.14);
+        outline-offset: 2px;
+        border-radius: 8px;
+      }
+
+      /* Топбар */
       #topbar {
-        font-family: "Roboto", sans-serif;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px 30px;
-        border-bottom: 1px solid #ddd;
+        padding: 18px 28px;
+        border-bottom: 1px solid rgba(13, 110, 253, 0.08);
+        background: linear-gradient(
+          90deg,
+          rgba(13, 110, 253, 0.03),
+          transparent 60%
+        );
+        gap: 12px;
       }
+
       .bar_content {
         display: flex;
-        column-gap: 60px;
+        column-gap: 48px;
+        align-items: center;
       }
+
+      .bar_content > div:first-child {
+        font-weight: 700;
+        color: var(--primary-600);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
       .navbar {
         display: flex;
-        column-gap: 20px;
+        gap: 12px;
+        flex-wrap: wrap;
       }
+
       .navbar a {
-        color: #000;
+        color: var(--primary-600);
         text-decoration: none;
+        padding: 7px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background-color 0.12s, transform 0.06s;
+      }
+
+      .navbar a:hover,
+      .navbar a:focus {
+        background: var(--primary-faint);
+        transform: translateY(-1px);
+        outline: none;
+      }
+
+      /* User area */
+      #user-area {
+        color: #07315f;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
     </style>
   </head>
@@ -61,7 +312,7 @@
     <div id="topbar">
       <div class="bar_content">
         <div><strong>Web-приложение</strong></div>
-        <div class="navbar">
+        <div class="navbar" role="navigation" aria-label="Главное меню">
           <a href="/login">Вход</a>
           <a href="/users">Пользователи</a>
           <a href="/roles">Роли</a>
@@ -71,29 +322,61 @@
           <a href="/cart">Корзина</a>
         </div>
       </div>
-      <div id="user-area">
-        <!-- сюда вставим "Вы вошли как ... / Выйти" -->
+
+      <div id="user-area" aria-live="polite">
         <span id="who"></span>
         <span id="sep" style="display: none"> | </span>
         <a href="#" id="logout" style="display: none">Выйти</a>
       </div>
     </div>
 
-    <main style="padding: 16px">
-      <div style="align-self: end; display: flex; gap: 8px; flex-wrap: wrap">
+    <main>
+      <div class="toolbar">
         <a href="/" class="btn btn-primary">← На главную</a>
       </div>
-      <h2 id="headline">Привет!</h2>
-      <div id="message">Загружаю...</div>
-      <p><a href="/stats">Перейти к статистике посещений</a></p>
+
+      <section class="hero" role="region" aria-labelledby="headline">
+        <div>
+          <h2 id="headline" class="headline">
+            <span class="accent">Привет!</span>
+            <span class="muted" style="font-weight: 600; font-size: 0.95rem"
+              >Добро пожаловать на защищенную страницу</span
+            >
+          </h2>
+
+          <div id="message" class="message">Загружаю...</div>
+          <div class="hint" id="hint">
+            Эта страница приватная — здесь видны данные только после входа.
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+          "
+        >
+          <!-- pill появится/обновится скриптом -->
+          <div id="visits" aria-hidden="true"></div>
+
+          <!-- небольшая декоративная метка -->
+          <div class="muted" style="font-size: 0.85rem">
+            Статус: <strong style="color: var(--primary-600)">Защищено</strong>
+          </div>
+        </div>
+      </section>
+
+      <p style="margin-top: 14px">
+        <a href="/stats">Перейти к статистике посещений</a>
+      </p>
     </main>
 
     <script>
       async function fetchMe() {
         try {
-          const res = await fetch("/auth/me", {
-            credentials: "same-origin",
-          });
+          const res = await fetch("/auth/me", { credentials: "same-origin" });
           if (res.status === 401) {
             // не авторизован — редирект на страницу логина
             window.location.href = "/login";
@@ -135,12 +418,52 @@
             return;
           }
           const data = await res.json();
-          document.getElementById("message").textContent =
-            data.message || `Вы посетили данную страницу ${data.count} раз`;
+
+          // Основное текстовое сообщение
+          const messageEl = document.getElementById("message");
+          if (data.message) {
+            messageEl.textContent = data.message;
+          } else if (typeof data.count !== "undefined") {
+            messageEl.textContent = `Вы посетили эту страницу ${
+              data.count
+            } ${pluralize(data.count, ["раз", "раза", "раз"])}`;
+          } else {
+            messageEl.textContent = "Информация о посещениях недоступна";
+          }
+
+          // Показываем pill с числом визитов (аккуратно)
+          const visitsWrap = document.getElementById("visits");
+          visitsWrap.innerHTML = "";
+          if (typeof data.count !== "undefined") {
+            const pill = document.createElement("div");
+            pill.className = "visits-pill";
+            pill.setAttribute(
+              "aria-label",
+              `Вы заходили ${data.count} ${pluralize(data.count, [
+                "раз",
+                "раза",
+                "раз",
+              ])}`
+            );
+            pill.textContent = String(data.count);
+            visitsWrap.appendChild(pill);
+          }
         } catch (e) {
+          console.error(e);
           document.getElementById("message").textContent =
             "Ошибка записи визита";
         }
+      }
+
+      // русская простая функция для склонения "раз"
+      function pluralize(n, forms) {
+        // forms = ['раз','раза','раз']
+        n = Math.abs(n) % 100;
+        const n1 = n % 10;
+        if (n > 10 && n < 20) return forms[2];
+        if (n1 > 1 && n1 < 5) return forms[1];
+        if (n1 == 1) return forms[0];
+        return forms[2];
       }
 
       (async function init() {
@@ -155,10 +478,10 @@
         who.textContent = `Вы вошли как ${me.full_name || me.login}`;
         sep.style.display = "inline";
         logoutLink.style.display = "inline";
-        logoutLink.onclick = function (e) {
+        logoutLink.addEventListener("click", function (e) {
           e.preventDefault();
           doLogout();
-        };
+        });
 
         // Записать визит и показать количество
         await recordVisitAndShow();

@@ -3,59 +3,253 @@
   <head>
     <meta charset="utf-8" />
     <title>Фирмы — каталог</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <style>
+      :root {
+        --primary: #0d6efd; /* основной цвет (заданный) */
+        --primary-600: #0b5ed7; /* темнее для hover */
+        --primary-300: #66b0ff; /* светлее для акцентов */
+        --primary-50: rgba(13, 110, 253, 0.06); /* очень светлый фон */
+        --muted: #6c757d;
+        --bg: #f7fbff;
+        --card-bg: #ffffff;
+        --radius: 10px;
+      }
+
+      /* Базовая типографика и фон */
+      html,
       body {
-        font-family: Arial, sans-serif;
+        height: 100%;
         margin: 0;
-        /* padding: 16px; */
+        font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+        background: linear-gradient(180deg, #f6fbff 0%, var(--bg) 100%);
+        color: #0b2440;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
-      ul {
-        list-style: none;
-        padding: 0;
+
+      /* Вёрстка страницы */
+      #topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 28px;
+        gap: 16px;
+        background: linear-gradient(
+          90deg,
+          rgba(13, 110, 253, 0.04),
+          transparent 60%
+        );
+        border-bottom: 1px solid rgba(13, 110, 253, 0.08);
+        backdrop-filter: blur(2px);
       }
-      li {
-        margin: 8px 0;
+
+      .bar_content {
+        display: flex;
+        align-items: center;
+        column-gap: 48px;
       }
+
+      .bar_content > div:first-child {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        color: var(--primary-600);
+      }
+
+      .navbar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .navbar a {
+        display: inline-block;
+        padding: 8px 10px;
+        border-radius: 8px;
+        color: var(--primary-600);
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.15s, color 0.15s, transform 0.06s;
+      }
+
+      .navbar a:hover,
+      .navbar a:focus {
+        background: var(--primary-50);
+        color: var(--primary-600);
+        transform: translateY(-1px);
+        outline: none;
+      }
+
+      /* Кнопки */
       .btn {
         appearance: none;
         border: 0;
         cursor: pointer;
         user-select: none;
-        padding: 11px 18px;
-        border-radius: 10px;
+        padding: 9px 16px;
+        border-radius: var(--radius);
         font-weight: 600;
-        transition: transform 0.05s, background-color 0.2s;
+        transition: transform 0.06s, background-color 0.18s, box-shadow 0.18s;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
       }
       .btn:active {
         transform: translateY(1px);
       }
+
       .btn-primary {
-        background: #0d6efd;
+        background: linear-gradient(
+          180deg,
+          var(--primary) 0%,
+          var(--primary-600) 100%
+        );
         color: #fff;
+        box-shadow: 0 6px 18px rgba(13, 110, 253, 0.12),
+          inset 0 -1px rgba(255, 255, 255, 0.06);
       }
       .btn-primary:hover {
-        background: #0b5ed7;
+        background: linear-gradient(180deg, var(--primary-600), #094bb0);
+        box-shadow: 0 8px 22px rgba(11, 94, 215, 0.14);
       }
-      #topbar {
-        font-family: "Roboto", sans-serif;
+      .btn-ghost {
+        background: transparent;
+        color: var(--primary-600);
+        border: 1px solid rgba(13, 110, 253, 0.12);
+      }
+      .btn-sm {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+        border-radius: 8px;
+      }
+
+      /* Заголовки */
+      h1 {
+        margin: 24px 28px 8px;
+        font-size: 1.6rem;
+        color: #06326a;
+      }
+
+      /* Контейнер для основных действий */
+      .actions {
         display: flex;
-        justify-content: space-between;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 10px 28px;
         align-items: center;
-        padding: 20px 30px;
-        border-bottom: 1px solid #ddd;
       }
-      .bar_content {
+
+      /* Список компаний: карточки */
+      #companies {
+        list-style: none;
+        padding: 20px;
+        margin: 0 28px 40px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 14px;
+      }
+
+      #companies li {
+        background: linear-gradient(180deg, var(--card-bg), #fbfdff);
+        border-radius: 12px;
+        padding: 14px;
+        box-shadow: 0 6px 18px rgba(8, 35, 102, 0.04);
+        border: 1px solid rgba(13, 110, 253, 0.06);
+        transition: transform 0.14s, box-shadow 0.14s, border-color 0.14s;
+        min-height: 56px;
         display: flex;
-        column-gap: 60px;
+        align-items: center;
       }
-      .navbar {
-        display: flex;
-        column-gap: 20px;
+
+      #companies li:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 36px rgba(13, 110, 253, 0.08);
+        border-color: rgba(13, 110, 253, 0.12);
       }
-      .navbar a {
-        color: #000;
+
+      #companies li a {
+        color: #05306b;
         text-decoration: none;
+        font-weight: 700;
+      }
+
+      #companies li .meta {
+        margin-left: auto;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      /* Ссылка в тексте */
+      a {
+        color: var(--primary);
+      }
+      a:hover,
+      a:focus {
+        color: var(--primary-600);
+        text-decoration: underline;
+      }
+
+      /* User area / logout */
+      #user-area {
+        color: #07315f;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      #logout {
+        color: var(--primary-600);
+        text-decoration: none;
+        padding: 6px 8px;
+        border-radius: 8px;
+      }
+      #logout:hover {
+        background: var(--primary-50);
+      }
+
+      /* Мелкие элементы */
+      .muted {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      /* "Загружаю..." / ошибки */
+      .placeholder {
+        color: var(--muted);
+        padding: 18px 28px;
+      }
+
+      /* Мобильное поведение */
+      @media (max-width: 720px) {
+        .bar_content {
+          column-gap: 12px;
+        }
+        #topbar {
+          padding: 14px 16px;
+        }
+        h1 {
+          margin-left: 16px;
+          margin-right: 16px;
+          font-size: 1.25rem;
+        }
+        #companies {
+          padding: 12px;
+          margin: 0 12px 28px;
+          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+          gap: 12px;
+        }
+      }
+
+      /* Доступность: фокус */
+      a:focus,
+      .btn:focus,
+      .navbar a:focus {
+        outline: 3px solid rgba(13, 110, 253, 0.14);
+        outline-offset: 2px;
+        border-radius: 8px;
       }
     </style>
   </head>
@@ -63,7 +257,7 @@
     <div id="topbar">
       <div class="bar_content">
         <div><strong>Web-приложение</strong></div>
-        <div class="navbar">
+        <div class="navbar" role="navigation" aria-label="Главное меню">
           <a href="/login">Вход</a>
           <a href="/users">Пользователи</a>
           <a href="/roles">Роли</a>
@@ -73,28 +267,22 @@
           <a href="/cart">Корзина</a>
         </div>
       </div>
-      <div id="user-area">
-        <!-- сюда вставим "Вы вошли как ... / Выйти" -->
+      <div id="user-area" aria-live="polite">
         <span id="who"></span>
         <span id="sep" style="display: none"> | </span>
         <a href="#" id="logout" style="display: none">Выйти</a>
       </div>
     </div>
-    <div
-      style="
-        align-self: end;
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-top: 15px;
-      "
-    >
+
+    <div class="actions" style="margin-top: 15px">
       <a href="/" class="btn btn-primary">← На главную</a>
+      <a href="/cart" class="btn btn-ghost btn-sm">Перейти в заказ</a>
     </div>
+
     <h1>Фирмы — Каталог автомобилей</h1>
-    <div><a href="/cart">Перейти в заказ</a></div>
-    <ul id="companies">
-      Загружаю...
+
+    <ul id="companies" aria-busy="true">
+      <li class="placeholder">Загружаю...</li>
     </ul>
 
     <script>
@@ -143,17 +331,32 @@
           const data = await res.json();
           const ul = document.getElementById("companies");
           ul.innerHTML = "";
+          if (!Array.isArray(data) || data.length === 0) {
+            ul.innerHTML = '<li class="placeholder">Фирмы не найдены</li>';
+            return;
+          }
           data.forEach((c) => {
             const li = document.createElement("li");
             const a = document.createElement("a");
-            a.href = `/company?company_id=${c.company_id}`;
+            a.href = `/company?company_id=${encodeURIComponent(c.company_id)}`;
             a.textContent = c.name;
+            a.setAttribute("aria-label", `Перейти в компанию ${c.name}`);
             li.appendChild(a);
+
+            // опционально — метка с городом/типом, если есть
+            if (c.extra) {
+              const meta = document.createElement("div");
+              meta.className = "meta";
+              meta.textContent = c.extra;
+              li.appendChild(meta);
+            }
             ul.appendChild(li);
           });
         } catch (e) {
           document.getElementById("companies").innerHTML =
-            "<li>Ошибка загрузки</li>";
+            '<li class="placeholder">Ошибка загрузки</li>';
+        } finally {
+          document.getElementById("companies").removeAttribute("aria-busy");
         }
       }
 

@@ -19,6 +19,7 @@ url = URL.create(
 
 engine = create_engine(url, echo=False, future=True)
 
+
 def main() -> int:
     ts = datetime.now(timezone.utc).isoformat()
     print(f"[{ts}] connecting to {url.render_as_string(hide_password=True)}")
@@ -28,24 +29,44 @@ def main() -> int:
             # по желанию можно зафиксировать search_path
             conn.execute(text("SET search_path TO auth, public"))
 
-            total_users = conn.execute(text("SELECT COUNT(*) FROM auth.users")).scalar_one()
-            total_roles = conn.execute(text("SELECT COUNT(*) FROM auth.roles")).scalar_one()
+            total_users = conn.execute(
+                text("SELECT COUNT(*) FROM auth.users")
+            ).scalar_one()
+            total_roles = conn.execute(
+                text("SELECT COUNT(*) FROM auth.roles")
+            ).scalar_one()
 
-            sample_users = conn.execute(text("""
+            sample_users = (
+                conn.execute(
+                    text(
+                        """
                 SELECT user_id, login, email
                 FROM auth.users
                 ORDER BY user_id
                 LIMIT 5
-            """)).mappings().all()
+            """
+                    )
+                )
+                .mappings()
+                .all()
+            )
 
-            sample_map = conn.execute(text("""
+            sample_map = (
+                conn.execute(
+                    text(
+                        """
                 SELECT u.login, r.role_name
                 FROM auth.user_roles ur
                 JOIN auth.users u ON u.user_id = ur.user_id
                 JOIN auth.roles r ON r.role_id = ur.role_id
                 ORDER BY u.login, r.role_name
                 LIMIT 10
-            """)).mappings().all()
+            """
+                    )
+                )
+                .mappings()
+                .all()
+            )
 
             print(f"users: {total_users}, roles: {total_roles}")
             print("sample users:")
@@ -62,6 +83,7 @@ def main() -> int:
     except SQLAlchemyError as e:
         print("ERROR:", e)
         return 1
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

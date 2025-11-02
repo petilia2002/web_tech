@@ -3,52 +3,221 @@
   <head>
     <meta charset="utf-8" />
     <title>Статистика</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <style>
+      :root {
+        --primary: #0d6efd;
+        --primary-600: #0b5ed7;
+        --primary-300: #66b0ff;
+        --primary-faint: rgba(13, 110, 253, 0.06);
+        --text: #072142;
+        --muted: #6c757d;
+        --bg: #f7fbff;
+        --card: #ffffff;
+        --radius: 10px;
+      }
+
+      /* Базовая типографика и фон */
+      html,
       body {
-        font-family: Arial, sans-serif;
+        height: 100%;
         margin: 0;
-        padding: 0;
+        font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+        background: linear-gradient(180deg, #fbfeff 0%, var(--bg) 100%);
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
+
+      /* Топбар */
       #topbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px 16px;
-        border-bottom: 1px solid #ddd;
-        background: #fafafa;
+        padding: 18px 28px;
+        border-bottom: 1px solid rgba(13, 110, 253, 0.08);
+        background: linear-gradient(
+          90deg,
+          rgba(13, 110, 253, 0.03),
+          transparent 60%
+        );
+        gap: 12px;
       }
-      #user-area {
-        font-size: 0.95rem;
-      }
-      a {
-        color: #0066cc;
-        text-decoration: none;
-      }
-      a:hover {
-        text-decoration: underline;
-      }
-      main {
-        padding: 16px;
-      }
-      #topbar {
-        font-family: "Roboto", sans-serif;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px 30px;
-        border-bottom: 1px solid #ddd;
-      }
+
       .bar_content {
         display: flex;
-        column-gap: 60px;
+        column-gap: 48px;
+        align-items: center;
       }
+
+      .bar_content > div:first-child {
+        font-weight: 700;
+        color: var(--primary-600);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
       .navbar {
         display: flex;
-        column-gap: 20px;
+        gap: 12px;
+        flex-wrap: wrap;
       }
+
       .navbar a {
-        color: #000;
+        color: var(--primary-600);
         text-decoration: none;
+        padding: 7px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background-color 0.12s, transform 0.06s;
+      }
+
+      .navbar a:hover,
+      .navbar a:focus {
+        background: var(--primary-faint);
+        transform: translateY(-1px);
+        outline: none;
+      }
+
+      /* User area */
+      #user-area {
+        color: #07315f;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      #logout {
+        color: var(--primary-600);
+        text-decoration: none;
+        padding: 6px 8px;
+        border-radius: 8px;
+      }
+      #logout:hover {
+        background: var(--primary-faint);
+      }
+
+      /* Main */
+      main {
+        padding: 20px 28px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        margin: 6px 0 14px;
+        color: #06326a;
+        font-size: 1.4rem;
+      }
+
+      /* Список статистики — карточки */
+      #list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        /* grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); */
+        gap: 14px;
+      }
+
+      #list li {
+        background: linear-gradient(180deg, var(--card), #fbfdff);
+        border-radius: 12px;
+        padding: 14px;
+        border: 1px solid rgba(13, 110, 253, 0.06);
+        box-shadow: 0 8px 20px rgba(8, 35, 102, 0.04);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        transition: transform 0.14s, box-shadow 0.14s, border-color 0.14s;
+        min-height: 64px;
+      }
+
+      #list li:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 36px rgba(13, 110, 253, 0.08);
+        border-color: rgba(13, 110, 253, 0.12);
+      }
+
+      .stat-line {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      /* .stat-item {
+        width: 400px;
+      } */
+
+      .stat-user {
+        font-weight: 700;
+        color: #05306b;
+      }
+
+      .stat-page {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .stat-count {
+        margin-left: auto;
+        background: linear-gradient(180deg, var(--primary-300), var(--primary));
+        color: white;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+
+      /* Placeholder / errors */
+      .placeholder {
+        color: var(--muted);
+        padding: 18px;
+      }
+
+      /* Link */
+      a#back-link {
+        display: inline-block;
+        margin-top: 14px;
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      a#back-link:hover,
+      a#back-link:focus {
+        color: var(--primary-600);
+        text-decoration: underline;
+      }
+
+      /* Адаптивность */
+      @media (max-width: 720px) {
+        .bar_content {
+          column-gap: 12px;
+        }
+        #topbar {
+          padding: 14px 16px;
+        }
+        main {
+          padding: 14px 16px;
+        }
+        #list {
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 12px;
+        }
+        h1 {
+          font-size: 1.15rem;
+        }
+      }
+
+      /* Фокус для доступности */
+      a:focus,
+      button:focus,
+      .navbar a:focus {
+        outline: 3px solid rgba(13, 110, 253, 0.14);
+        outline-offset: 2px;
+        border-radius: 8px;
       }
     </style>
   </head>
@@ -56,7 +225,7 @@
     <div id="topbar">
       <div class="bar_content">
         <div><strong>Web-приложение</strong></div>
-        <div class="navbar">
+        <div class="navbar" role="navigation" aria-label="Главное меню">
           <a href="/login">Вход</a>
           <a href="/users">Пользователи</a>
           <a href="/roles">Роли</a>
@@ -66,8 +235,8 @@
           <a href="/cart">Корзина</a>
         </div>
       </div>
-      <div id="user-area">
-        <!-- сюда вставим "Вы вошли как ... / Выйти" -->
+
+      <div id="user-area" aria-live="polite">
         <span id="who"></span>
         <span id="sep" style="display: none"> | </span>
         <a href="#" id="logout" style="display: none">Выйти</a>
@@ -75,20 +244,21 @@
     </div>
 
     <main>
-      <ol id="list">
-        Загружаю...
+      <h1>Статистика посещений</h1>
+
+      <ol id="list" aria-busy="true">
+        <li class="placeholder">Загружаю...</li>
       </ol>
+
       <p>
-        <a id="back-link" href="/protected">Назад на защищённую страницу</a>
+        <a id="back-link" href="/protected">← Назад на защищённую страницу</a>
       </p>
     </main>
 
     <script>
       async function fetchMe() {
         try {
-          const res = await fetch("/auth/me", {
-            credentials: "same-origin",
-          });
+          const res = await fetch("/auth/me", { credentials: "same-origin" });
           if (res.status === 401) {
             window.location.href = "/login";
             return null;
@@ -97,7 +267,6 @@
           return await res.json();
         } catch (err) {
           console.error("fetchMe error", err);
-          // Если ошибка — безопаснее уйти на страницу логина
           window.location.href = "/login";
           return null;
         }
@@ -129,18 +298,54 @@
           const list = document.getElementById("list");
           list.innerHTML = "";
           if (!data.items || data.items.length === 0) {
-            list.innerHTML = "<li>Нет данных</li>";
+            list.innerHTML = "<li class='placeholder'>Нет данных</li>";
             return;
           }
+
           data.items.forEach((it) => {
             const li = document.createElement("li");
-            li.textContent = `Пользователь ${it.login} заходил на страницу ${it.page} ${it.count} раз`;
+            li.className = "stat-item";
+
+            const line = document.createElement("div");
+            line.className = "stat-line";
+
+            const user = document.createElement("div");
+            user.className = "stat-user";
+            user.textContent = it.login;
+
+            const page = document.createElement("div");
+            page.className = "stat-page";
+            page.textContent = `— ${it.page}`;
+
+            const count = document.createElement("div");
+            count.className = "stat-count";
+            count.textContent = it.count;
+
+            line.appendChild(user);
+            line.appendChild(page);
+            line.appendChild(count);
+
+            const note = document.createElement("div");
+            note.className = "stat-note muted";
+            if (it.last_seen) {
+              note.textContent = `Последний визит: ${new Date(
+                it.last_seen
+              ).toLocaleString()}`;
+            } else {
+              note.textContent = `Инфо обновлена`;
+            }
+
+            li.appendChild(line);
+            li.appendChild(note);
+
             list.appendChild(li);
           });
         } catch (e) {
           console.error("loadStats error", e);
           document.getElementById("list").innerHTML =
-            "<li>Ошибка связи с сервером</li>";
+            "<li class='placeholder'>Ошибка связи с сервером</li>";
+        } finally {
+          document.getElementById("list").removeAttribute("aria-busy");
         }
       }
 
@@ -148,7 +353,6 @@
         const me = await fetchMe();
         if (!me) return;
 
-        // Показываем верхнюю панель с именем и кнопкой выхода
         const who = document.getElementById("who");
         const logoutLink = document.getElementById("logout");
         const sep = document.getElementById("sep");
@@ -161,7 +365,6 @@
           doLogout();
         });
 
-        // Загружаем статистику
         await loadStats();
       })();
     </script>

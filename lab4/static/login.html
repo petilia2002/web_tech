@@ -43,12 +43,13 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px 30px;
+        padding: 20px 50px;
         border-bottom: 1px solid #ddd;
       }
       .bar_content {
         display: flex;
         column-gap: 60px;
+        margin-left: 100px;
       }
       .navbar {
         display: flex;
@@ -58,13 +59,331 @@
         color: #000;
         text-decoration: none;
       }
+
+      /* Общие стили для страницы */
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: #212529;
+        overflow: hidden;
+      }
+
+      /* Основной контейнер */
+      body > div:not(#topbar) {
+        width: 100%;
+        max-width: 500px;
+        margin: 20px auto;
+        padding: 0 20px;
+        box-sizing: border-box;
+      }
+
+      /* Заголовок */
+      h1 {
+        text-align: center;
+        color: white;
+        font-weight: 400;
+        font-size: 2.5em;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        margin: 0;
+      }
+
+      /* Контейнер формы */
+      #loginForm {
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(13, 110, 253, 0.15);
+        margin-bottom: 20px;
+        position: relative;
+        border: 1px solid #e9ecef;
+      }
+
+      /* Стили для меток и полей ввода */
+      #loginForm label {
+        display: block;
+        margin-bottom: 25px;
+        font-weight: 500;
+        color: #495057;
+        font-size: 15px;
+      }
+
+      #loginForm input {
+        width: 100%;
+        padding: 14px 16px;
+        margin-top: 8px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+        background: #f8f9fa;
+      }
+
+      #loginForm input:focus {
+        outline: none;
+        border-color: #0d6efd;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+      }
+
+      /* Стили для кнопки входа */
+      #loginForm button {
+        width: 100%;
+        padding: 15px;
+        background: #0d6efd;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+      }
+
+      #loginForm button:hover {
+        background: #0b5ed7;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(13, 110, 253, 0.25);
+      }
+
+      #loginForm button:active {
+        transform: translateY(0);
+      }
+
+      /* Стили для уведомлений */
+      .notice {
+        background: linear-gradient(135deg, #0d6efd 0%, #3d8bfd 100%);
+        color: white;
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+        border: 1px solid #3d8bfd;
+        font-weight: 500;
+      }
+
+      /* Стили для ошибок */
+      .error {
+        background: #dc3545;
+        color: white;
+        padding: 16px 20px;
+        border-radius: 8px;
+        text-align: center;
+        margin-top: 20px;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+        border: 1px solid #e35d6a;
+        font-weight: 500;
+      }
+
+      /* Кнопка "На главную" */
+      .btn {
+        text-decoration: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-block;
+        font-size: 14px;
+      }
+
+      .btn-primary {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .btn-primary:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Верхняя панель */
+      /* #topbar {
+        background: white;
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
+        border-bottom: 2px solid #0d6efd;
+        width: 100%;
+      }
+
+      .navbar a {
+        color: #495057;
+        transition: color 0.3s ease;
+        font-weight: 500;
+      }
+
+      .navbar a:hover {
+        color: #0d6efd;
+      }
+
+      /* Область пользователя */
+      #user-area {
+        color: #495057;
+        font-weight: 500;
+      }
+
+      #logout {
+        color: #0d6efd;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        font-weight: 500;
+      }
+
+      #logout:hover {
+        color: #0b5ed7;
+        text-decoration: underline;
+      }
+
+      /* Адаптивность */
+      @media (max-width: 768px) {
+        body > div:not(#topbar) {
+          padding: 0 15px;
+          margin: 10px auto;
+        }
+
+        #loginForm {
+          padding: 30px 25px;
+          margin: 10px;
+        }
+
+        h1 {
+          font-size: 2em;
+          margin: 20px 0;
+        }
+
+        .navbar {
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+      }
+
+      /* Анимации */
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      #loginForm {
+        animation: slideInUp 0.6s ease-out;
+      }
+
+      .notice,
+      .error {
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      /* .bar_content strong {
+        color: #0d6efd;
+        font-size: 1.2em;
+      } */
+
+      #sep {
+        color: #6c757d;
+        margin: 0 5px;
+      }
+
+      /* Фокус-состояния для доступности */
+      .btn:focus,
+      #loginForm input:focus,
+      #loginForm button:focus {
+        outline: 2px solid #0d6efd;
+        outline-offset: 2px;
+      }
+
+      /* Стили для placeholder */
+      #loginForm input::placeholder {
+        color: #6c757d;
+        opacity: 0.7;
+      }
+
+      #loginForm,
+      .notice,
+      .error {
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      #topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 28px;
+        border-bottom: 1px solid rgba(13, 110, 253, 0.08);
+        background: linear-gradient(
+          90deg,
+          rgba(13, 110, 253, 0.03),
+          transparent 60%
+        );
+        gap: 12px;
+        background: white;
+        color: #0d6efd;
+        width: 100%;
+      }
+
+      .bar_content {
+        display: flex;
+        column-gap: 48px;
+        align-items: center;
+      }
+
+      .bar_content > div:first-child {
+        font-weight: 700;
+        color: var(--primary-600);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .navbar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .navbar a {
+        color: var(--primary-600);
+        text-decoration: none;
+        padding: 7px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background-color 0.12s, transform 0.06s;
+      }
+
+      .navbar a:hover,
+      .navbar a:focus {
+        background: var(--primary-faint);
+        transform: translateY(-1px);
+        outline: none;
+      }
     </style>
   </head>
   <body>
     <div id="topbar">
       <div class="bar_content">
         <div><strong>Web-приложение</strong></div>
-        <div class="navbar">
+        <div class="navbar" role="navigation" aria-label="Главное меню">
           <a href="/login">Вход</a>
           <a href="/users">Пользователи</a>
           <a href="/roles">Роли</a>
@@ -74,8 +393,8 @@
           <a href="/cart">Корзина</a>
         </div>
       </div>
-      <div id="user-area">
-        <!-- сюда вставим "Вы вошли как ... / Выйти" -->
+
+      <div id="user-area" aria-live="polite">
         <span id="who"></span>
         <span id="sep" style="display: none"> | </span>
         <a href="#" id="logout" style="display: none">Выйти</a>
@@ -136,6 +455,12 @@
         } catch (e) {
           msg.textContent = "Network error";
         }
+      });
+
+      // Добавляем декоративный элемент к форме
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("loginForm");
+        form.style.position = "relative";
       });
     </script>
   </body>

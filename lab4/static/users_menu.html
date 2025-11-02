@@ -146,14 +146,6 @@
       .link:hover {
         text-decoration: underline;
       }
-      #topbar {
-        font-family: "Roboto", sans-serif;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px 30px;
-        border-bottom: 1px solid #ddd;
-      }
       .bar_content {
         display: flex;
         column-gap: 60px;
@@ -166,13 +158,99 @@
         color: #000;
         text-decoration: none;
       }
+
+      :root {
+        --primary: #0d6efd;
+        --primary-600: #0b5ed7;
+        --primary-300: #66b0ff;
+        --primary-faint: rgba(13, 110, 253, 0.06);
+        --bg: #f7fbff;
+        --card: #ffffff;
+        --muted: #6c757d;
+        --text: #072142;
+        --radius: 12px;
+      }
+
+      body {
+        font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      }
+
+      /* Топбар */
+      #topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 28px;
+        border-bottom: 1px solid rgba(13, 110, 253, 0.08);
+        background: linear-gradient(
+          90deg,
+          rgba(13, 110, 253, 0.03),
+          transparent 60%
+        );
+        gap: 12px;
+      }
+
+      .bar_content {
+        display: flex;
+        column-gap: 48px;
+        align-items: center;
+      }
+
+      .bar_content > div:first-child {
+        font-weight: 700;
+        color: var(--primary-600);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .navbar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .navbar a {
+        color: var(--primary-600);
+        text-decoration: none;
+        padding: 7px 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background-color 0.12s, transform 0.06s;
+      }
+
+      .navbar a:hover,
+      .navbar a:focus {
+        background: var(--primary-faint);
+        transform: translateY(-1px);
+        outline: none;
+      }
+
+      /* User area */
+      #user-area {
+        color: #07315f;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      #logout {
+        padding: 6px 10px;
+        border-radius: 8px;
+        color: var(--primary-600);
+        text-decoration: none;
+      }
+      #logout:hover {
+        background: var(--primary-faint);
+      }
     </style>
   </head>
   <body>
     <div id="topbar">
       <div class="bar_content">
         <div><strong>Web-приложение</strong></div>
-        <div class="navbar">
+        <div class="navbar" role="navigation" aria-label="Главное меню">
           <a href="/login">Вход</a>
           <a href="/users">Пользователи</a>
           <a href="/roles">Роли</a>
@@ -182,8 +260,8 @@
           <a href="/cart">Корзина</a>
         </div>
       </div>
-      <div id="user-area">
-        <!-- сюда вставим "Вы вошли как ... / Выйти" -->
+
+      <div id="user-area" aria-live="polite">
         <span id="who"></span>
         <span id="sep" style="display: none"> | </span>
         <a href="#" id="logout" style="display: none">Выйти</a>
